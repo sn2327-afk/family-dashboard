@@ -2133,6 +2133,17 @@
         ev.preventDefault();
         saveDictScore(fridayKey(dictOffset));
       });
+      dictBox.addEventListener('change', function (ev) {
+        var t = ev.target;
+        if (!t || t.id !== 'dictInput') return;
+        var raw = String(t.value == null ? '' : t.value).trim();
+        if (raw === '') return;                       // 빈 칸은 지우기 버튼(저장)으로만 비운다
+        var n = parseInt(raw, 10);
+        if (!isFinite(n) || n < 0 || n > 100) return;  // 잘못된 값은 저장 버튼에서 안내
+        var key = fridayKey(dictOffset);
+        if (state.dictation.scores[key] === n) return;
+        saveDictScore(key);
+      });
       dictBox.addEventListener('click', function (ev) {
         var nav = ev.target.closest('[data-dict-week]');
         if (nav) {
@@ -2378,7 +2389,6 @@
     var typing = (ae && ae.id === 'dictInput') ? ae.value : null;
 
     clear(box);
-    var today = todayKey();
     var isFriday = new Date().getDay() === 5;
     var key = fridayKey(dictOffset);
     var score = dictScore(key);
