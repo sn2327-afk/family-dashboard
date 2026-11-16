@@ -527,6 +527,92 @@
   .wd.future{opacity:.42;}
   .week-sub{margin:9px 0 0;font-size:12px;font-weight:700;color:#AE9C92;}
 
+  /* 요일이 정해진 할 일 안내 */
+  .task-note{
+    margin:10px 0 0;font-size:11.5px;font-weight:800;color:#A0887B;
+    background:#FBF6F0;border:1.5px dashed #F0E2D4;border-radius:13px;
+    padding:7px 10px;line-height:1.45;
+  }
+
+  /* ───────── 금요일 받아쓰기 ───────── */
+  .dict{
+    position:relative;margin-top:14px;padding:13px 13px 12px;
+    border-radius:20px;
+    background:
+      radial-gradient(circle at 94% 4%, #FFF6DA 0%, rgba(255,246,218,0) 58%),
+      linear-gradient(160deg,#F7F2FE 0%,#F1F8FE 56%,#FFF8EC 100%);
+    border:2px dashed #E6DAF7;
+  }
+  .dict.dday{
+    border-color:#C9B6F0;
+    box-shadow:0 0 0 4px rgba(198,181,240,.15);
+  }
+  .dict-head{display:flex;align-items:center;gap:9px;}
+  .dict-head .di{
+    width:34px;height:34px;flex:0 0 auto;border-radius:12px;
+    display:grid;place-items:center;font-size:17px;background:#fff;
+    box-shadow:0 2px 6px rgba(180,160,200,.18);
+  }
+  .dict-head h3{
+    margin:0;font-family:var(--hand);font-weight:400;
+    font-size:16px;letter-spacing:-.2px;color:#6A55A8;line-height:1.3;
+  }
+  .dict-head .dp{margin:1px 0 0;font-size:11px;font-weight:800;color:#A294C4;letter-spacing:-.1px;}
+  .dict-badge{
+    margin-left:auto;flex:0 0 auto;
+    font-size:10.5px;font-weight:900;color:#8A5A17;
+    background:linear-gradient(135deg,#FFEAA8,#FFD79B);
+    border-radius:999px;padding:5px 9px;white-space:nowrap;
+    box-shadow:0 2px 0 rgba(240,205,134,.55);
+    animation:dictPop 1.8s ease-in-out infinite;
+  }
+  @keyframes dictPop{0%,100%{transform:scale(1)}50%{transform:scale(1.05) rotate(-1deg)}}
+  .dict-daterow{display:flex;align-items:center;gap:6px;margin-top:10px;}
+  .dict-date{
+    flex:1 1 auto;text-align:center;min-width:0;
+    font-size:12.5px;font-weight:900;color:#7C6AA8;
+    background:#fff;border-radius:13px;padding:9px 6px;
+    border:1.5px solid #EDE5FA;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .dict-date .wt{font-size:10.5px;font-weight:800;color:#B0A2CE;margin-left:4px;}
+  .dict-nav{
+    flex:0 0 auto;width:38px;height:38px;border:none;border-radius:12px;
+    background:#fff;color:#9C8FBF;font:inherit;font-size:15px;font-weight:900;
+    cursor:pointer;box-shadow:0 2px 0 rgba(200,185,225,.4);
+  }
+  .dict-nav:active{transform:translateY(2px);box-shadow:none;}
+  .dict-nav:disabled{opacity:.32;box-shadow:none;}
+  .dict-form{display:flex;align-items:center;gap:6px;margin-top:8px;}
+  .dict-form input{
+    flex:1 1 auto;min-width:0;min-height:50px;
+    text-align:center;font-family:var(--hand);font-size:20px;color:#5B4A40;
+    border-radius:15px;border:2px solid #E6DCF6;background:#fff;padding:8px 10px;
+    -moz-appearance:textfield;
+  }
+  .dict-form input::-webkit-outer-spin-button,
+  .dict-form input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .dict-form input:focus{border-color:#C6B5F0;box-shadow:0 0 0 3px rgba(198,181,240,.18);background:#fff;}
+  .dict-unit{flex:0 0 auto;font-size:13px;font-weight:900;color:#9C8FBF;}
+  .dict-save{
+    flex:0 0 auto;min-height:50px;padding:0 16px;border:none;
+    border-radius:15px;font:inherit;font-size:14px;font-weight:900;color:#6A55A8;
+    background:linear-gradient(180deg,#EDE5FF,#DED3FB);
+    box-shadow:0 3px 0 #CCC0F1;cursor:pointer;
+  }
+  .dict-save:active{transform:translateY(2px);box-shadow:none;}
+  .dict-his{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:5px;}
+  .dict-his li{
+    display:flex;align-items:center;gap:5px;
+    font-size:11px;font-weight:800;color:#8B7FB0;
+    background:#fff;border:1.5px solid #EDE5FA;border-radius:999px;padding:4px 9px;
+    cursor:pointer;
+  }
+  .dict-his li b{font-family:var(--hand);font-size:13px;font-weight:400;color:#6A55A8;}
+  .dict-his li.on{border-color:#C6B5F0;background:#F6F1FE;box-shadow:0 1px 0 rgba(198,181,240,.5);}
+  .dict-empty{margin:9px 0 0;font-size:11px;font-weight:700;color:#AFA3C7;}
+  .dict-hint{margin:8px 0 0;font-size:10.5px;font-weight:700;color:#B4A8CC;}
+
   /* ───────── 용돈 ───────── */
   .allow-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
   .allow-box{
@@ -1348,13 +1434,17 @@
   var SYNC_LOCAL_ONLY = ['timer', 'tab', 'chatAuthor'];
   var SYNC_PUSH_DEBOUNCE = 150;   // 입력 후 서버로 보내기까지 기다리는 시간(ms)
 
+  /* 요일이 정해진 할 일 (0=일 … 6=토) — 은우 숙제는 화·금요일만 */
+  var TASK_DAYS = { 'eunwoo-homework': [2, 5] };
+  var DICTATION_KID = 'eunwoo';     // 금요일 받아쓰기 점수는 은우만
+
   var KIDS = {
     eunwoo: {
       name: '은우', emoji: '👦', theme: 'sky',
       color: '#9FCDEF', bg: '#EAF4FD', ink: '#2C6A96',
       defaults: [
         { id: 'eunwoo-eyelevel', emoji: '📘', label: '은우 눈높이' },
-        { id: 'eunwoo-homework', emoji: '✏️', label: '은우 숙제' }
+        { id: 'eunwoo-homework', emoji: '✏️', label: '은우 숙제', days: [2, 5] }
       ]
     },
     dayun: {
@@ -1388,10 +1478,14 @@
       geo: { lastFeed: '2026-11-14', cycleDays: 3, memo: '' },
       tasks: {
         eunwoo: KIDS.eunwoo.defaults.map(function (d) {
-          return { id: d.id, emoji: d.emoji, label: d.label, builtin: true };
+          var t = { id: d.id, emoji: d.emoji, label: d.label, builtin: true };
+          if (d.days) t.days = d.days.slice();
+          return t;
         }),
         dayun: KIDS.dayun.defaults.map(function (d) {
-          return { id: d.id, emoji: d.emoji, label: d.label, builtin: true };
+          var t = { id: d.id, emoji: d.emoji, label: d.label, builtin: true };
+          if (d.days) t.days = d.days.slice();
+          return t;
         })
       },
       klass: {
@@ -1407,6 +1501,7 @@
       wishlist: [],
       weekplan: [],
       dinner: { date: '', text: '' },
+      dictation: { scores: {} },
       tab: 'shopping',
       allowance: {
         perCheck: ALLOW_DEFAULT,
@@ -1472,6 +1567,8 @@
     s.tasks.dayun = s.tasks.dayun.filter(validTask);
     if (!s.tasks.eunwoo.length) s.tasks.eunwoo = d.tasks.eunwoo;
     if (!s.tasks.dayun.length) s.tasks.dayun = d.tasks.dayun;
+    s.tasks.eunwoo.forEach(fixTaskDays);
+    s.tasks.dayun.forEach(fixTaskDays);
     if (!s.days || typeof s.days !== 'object' || Array.isArray(s.days)) s.days = {};
     s.shopping = cleanItems(s.shopping);
     s.wishlist = cleanItems(s.wishlist);
@@ -1490,6 +1587,18 @@
     if (!s.dinner.text) s.dinner.text = '';
     if (typeof s.dinner.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(s.dinner.date)) s.dinner.date = '';
     if (!s.dinner.text) s.dinner.date = '';
+
+    /* 금요일 받아쓰기 점수 — { scores: { 'YYYY-MM-DD(금)': 0~100 } } */
+    var rawDict = (raw.dictation && typeof raw.dictation === 'object' && !Array.isArray(raw.dictation)) ? raw.dictation : {};
+    var rawScores = (rawDict.scores && typeof rawDict.scores === 'object' && !Array.isArray(rawDict.scores)) ? rawDict.scores : {};
+    var cleanScores = {};
+    Object.keys(rawScores).forEach(function (k) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(k)) return;
+      var n = parseInt(rawScores[k], 10);
+      if (!isFinite(n)) return;
+      cleanScores[k] = Math.min(100, Math.max(0, n));
+    });
+    s.dictation = { scores: cleanScores };
     if (LIST_TABS.indexOf(s.tab) === -1) s.tab = 'shopping';
 
     s.allowance = Object.assign(
@@ -1542,6 +1651,38 @@
 
   function validTask(t) {
     return t && typeof t.id === 'string' && typeof t.label === 'string' && t.label.trim() !== '';
+  }
+
+  /* 할 일의 요일 설정을 정리한다 (기본 할 일은 정해진 요일로 되돌린다) */
+  function fixTaskDays(t) {
+    if (!t) return;
+    if (TASK_DAYS[t.id]) { t.days = TASK_DAYS[t.id].slice(); return; }
+    if (Array.isArray(t.days)) {
+      var days = [];
+      t.days.forEach(function (x) {
+        var n = parseInt(x, 10);
+        if (isFinite(n) && n >= 0 && n <= 6 && days.indexOf(n) === -1) days.push(n);
+      });
+      days.sort(function (a, b) { return a - b; });
+      if (days.length) t.days = days;
+      else delete t.days;
+    } else if (t.days !== undefined) {
+      delete t.days;
+    }
+  }
+
+  /* 요일 설정이 있는 할 일은 정해진 요일에만 오늘 목록에 들어간다 */
+  function taskDays(t) {
+    return (t && Array.isArray(t.days) && t.days.length) ? t.days : null;
+  }
+
+  function tasksOn(kidId, key) {
+    var list = state.tasks[kidId] || [];
+    var dow = parseYmd(key || todayKey()).getDay();
+    return list.filter(function (t) {
+      var days = taskDays(t);
+      return !days || days.indexOf(dow) !== -1;
+    });
   }
 
   /* 리스트 항목(장보기 · 먹고 싶은 메뉴 · 이번 주 일정) 공통 정리 */
@@ -1720,7 +1861,7 @@
     }
     for (var k = 0; k < KID_ORDER.length; k++) {
       var kid = KID_ORDER[k];
-      var list = state.tasks[kid];
+      var list = tasksOn(kid, todayKey());
       for (var j = 0; j < list.length; j++) {
         total++;
         if (rec.kids[kid][list[j].id]) done++;
@@ -1978,10 +2119,43 @@
 
     var weekBox = h('div', { class: 'week', id: 'week-' + kidId });
 
+    var dictBox = null;
+    if (kidId === DICTATION_KID) dictBox = h('div', { class: 'dict', id: 'dictPanel' });
+
     sec.appendChild(head);
     sec.appendChild(listBox);
     sec.appendChild(form);
+    if (dictBox) sec.appendChild(dictBox);
     sec.appendChild(weekBox);
+
+    if (dictBox) {
+      dictBox.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        saveDictScore(fridayKey(dictOffset));
+      });
+      dictBox.addEventListener('click', function (ev) {
+        var nav = ev.target.closest('[data-dict-week]');
+        if (nav) {
+          ev.preventDefault();
+          var step = parseInt(nav.dataset.dictWeek, 10) || 0;
+          dictOffset = Math.max(DICT_OFFSET_MIN, Math.min(DICT_OFFSET_MAX, dictOffset + step));
+          renderDictation();
+          return;
+        }
+        var saveBtn = ev.target.closest('[data-dict-save]');
+        if (saveBtn) {
+          ev.preventDefault();
+          saveDictScore(fridayKey(dictOffset));
+          return;
+        }
+        var pick = ev.target.closest('[data-dict-key]');
+        if (pick) {
+          ev.preventDefault();
+          dictOffset = Math.max(DICT_OFFSET_MIN, Math.min(DICT_OFFSET_MAX, weekOffsetBetween(todayKey(), pick.dataset.dictKey)));
+          renderDictation();
+        }
+      });
+    }
 
     form.addEventListener('submit', function (ev) {
       ev.preventDefault();
@@ -2020,10 +2194,10 @@
     var rec = dayRead(todayKey());
     var box = $('#tasks-' + kidId);
     clear(box);
-    var list = state.tasks[kidId];
+    var list = tasksOn(kidId, todayKey());
 
     if (!list.length) {
-      box.appendChild(h('p', { class: 'empty', text: '할 일이 없어요. 아래에서 추가해 보세요.' }));
+      box.appendChild(h('p', { class: 'empty', text: '오늘은 할 일이 없어요. 아래에서 추가해 보세요.' }));
     }
 
     list.forEach(function (task) {
@@ -2056,7 +2230,17 @@
       box.appendChild(row);
     });
 
+    /* 요일이 정해진 할 일 안내 (은우 숙제 → 화·금요일) */
+    var sched = (state.tasks[kidId] || []).filter(function (t) { return taskDays(t); });
+    if (sched.length) {
+      var parts = sched.map(function (t) {
+        return t.label + '는 ' + t.days.map(function (n) { return WEEK[n]; }).join('·') + '요일';
+      });
+      box.appendChild(h('p', { class: 'task-note', id: 'note-' + kidId, text: '🗓️ ' + parts.join(' · ') }));
+    }
+
     renderWeek(kidId);
+    if (kidId === DICTATION_KID) renderDictation();
     var balEl = $('#balAmt-' + kidId);
     if (balEl) balEl.textContent = won(state.allowance.balances[kidId] || 0);
     renderHeader();
@@ -2065,8 +2249,7 @@
   function renderWeek(kidId) {
     var box = $('#week-' + kidId);
     clear(box);
-    var list = state.tasks[kidId];
-    var total = list.length;
+    var total = tasksOn(kidId, todayKey()).length;
     var days = weekDates();
     var today = todayKey();
 
@@ -2078,8 +2261,11 @@
     days.forEach(function (d, idx) {
       var key = ymd(d);
       var rec = dayRead(key);
+      /* 그날 해야 하는 할 일만 모수에 넣는다 (화·금이 아닌 날은 은우 숙제 제외) */
+      var dayList = tasksOn(kidId, key);
+      var dayTotal = dayList.length;
       var doneCount = 0;
-      list.forEach(function (t) { if (rec.kids[kidId][t.id]) doneCount++; });
+      dayList.forEach(function (t) { if (rec.kids[kidId][t.id]) doneCount++; });
       var isFuture = key > today;
       var isToday = key === today;
 
@@ -2091,13 +2277,13 @@
 
       if (!isFuture) {
         elapsed++;
-        if (total > 0 && doneCount === total) {
+        if (dayTotal > 0 && doneCount === dayTotal) {
           cls += ' full';
           bubble.textContent = '✓';
           fullDays++;
         } else if (doneCount > 0) {
           cls += ' part';
-          var ratio = Math.round(doneCount / total * 100);
+          var ratio = Math.round(doneCount / dayTotal * 100);
           bubble.style.background = 'conic-gradient(' + cfgColor(kidId) + ' ' + ratio + '%, #F6EDE5 0)';
           bubble.textContent = String(doneCount);
         } else {
@@ -2107,7 +2293,7 @@
         bubble.textContent = '';
       }
 
-      grid.appendChild(h('div', { class: cls, title: (d.getMonth() + 1) + '/' + d.getDate() + ' · ' + doneCount + '/' + total }, [
+      grid.appendChild(h('div', { class: cls, title: (d.getMonth() + 1) + '/' + d.getDate() + ' · ' + doneCount + '/' + dayTotal }, [
         h('span', { class: 'l', text: WEEK[d.getDay()] }),
         bubble
       ]));
@@ -2124,6 +2310,159 @@
 
   function cfgColor(kidId) { return KIDS[kidId].color; }
   function cfgName(kidId) { return KIDS[kidId].name; }
+
+  /* ═══════════ 금요일 받아쓰기 점수 ═══════════ */
+  var dictOffset = 0;              // 이번 주 기준 몇 주 이동해 보는지 (기기마다 따로)
+  var DICT_OFFSET_MIN = -20;
+  var DICT_OFFSET_MAX = 2;
+
+  /* 그 주의 금요일 날짜 키 */
+  function fridayKey(offset) {
+    var t = new Date();
+    var d = new Date(t.getFullYear(), t.getMonth(), t.getDate() + (5 - t.getDay()) + (offset || 0) * 7);
+    return ymd(d);
+  }
+
+  function weekOffsetBetween(fromKey, toKey) {
+    var diff = dayDiff(fridayKey(0), toKey);
+    if (diff === null) return 0;
+    return Math.round(diff / 7);
+  }
+
+  function dictScore(key) {
+    var v = state.dictation && state.dictation.scores ? state.dictation.scores[key] : null;
+    return (typeof v === 'number' && isFinite(v)) ? v : null;
+  }
+
+  function dictWeekTag(offset) {
+    if (offset === 0) return '이번 주';
+    if (offset === -1) return '지난 주';
+    if (offset === 1) return '다음 주';
+    return offset < 0 ? (-offset) + '주 전' : offset + '주 후';
+  }
+
+  function saveDictScore(key) {
+    var el = $('#dictInput');
+    if (!el || !state.dictation) return;
+    var raw = String(el.value == null ? '' : el.value).trim();
+    if (raw === '') {
+      if (state.dictation.scores[key] !== undefined) {
+        delete state.dictation.scores[key];
+        save(true);
+        renderDictation();
+        toast(mdLabel(key) + ' 받아쓰기 점수를 지웠어요');
+      } else {
+        toast('받아쓰기 점수를 적어 주세요');
+        el.focus();
+      }
+      return;
+    }
+    var n = parseInt(raw, 10);
+    if (!isFinite(n) || n < 0 || n > 100) {
+      toast('0~100 사이 점수를 적어 주세요');
+      el.focus();
+      return;
+    }
+    state.dictation.scores[key] = n;
+    save(true);
+    renderDictation();
+    toast('받아쓰기 ' + n + '점 저장 ✓ ' + mdLabel(key) + ' (금)');
+  }
+
+  function renderDictation() {
+    var box = $('#dictPanel');
+    if (!box) return;
+
+    /* 입력 중이던 값을 지키기 */
+    var ae = document.activeElement;
+    var typing = (ae && ae.id === 'dictInput') ? ae.value : null;
+
+    clear(box);
+    var today = todayKey();
+    var isFriday = new Date().getDay() === 5;
+    var key = fridayKey(dictOffset);
+    var score = dictScore(key);
+    var showBadge = isFriday && dictOffset === 0;
+
+    if (showBadge) box.classList.add('dday');
+    else box.classList.remove('dday');
+
+    /* ── 머리말 ── */
+    var headRight = showBadge
+      ? h('span', { class: 'dict-badge', id: 'dictTodayBadge', text: '오늘 받아쓰기 날!' })
+      : null;
+    box.appendChild(h('div', { class: 'dict-head' }, [
+      h('span', { class: 'di', text: '📝' }),
+      h('div', null, [
+        h('h3', { text: '금요일 받아쓰기 점수' }),
+        h('p', { class: 'dp', id: 'dictSub', text: (dictOffset === 0 ? '이번 주' : dictWeekTag(dictOffset)) + (score === null ? ' 점수를 적어 둬요' : ' ' + score + '점 · 고쳐도 돼요') })
+      ]),
+      headRight
+    ]));
+
+    /* ── 날짜 이동 ── */
+    var prev = h('button', {
+      class: 'dict-nav', type: 'button', text: '‹',
+      dataset: { dictWeek: '-1' },
+      'aria-label': '지난 주 금요일'
+    });
+    if (dictOffset <= DICT_OFFSET_MIN) prev.disabled = true;
+    var next = h('button', {
+      class: 'dict-nav', type: 'button', text: '›',
+      dataset: { dictWeek: '1' },
+      'aria-label': '다음 주 금요일'
+    });
+    if (dictOffset >= DICT_OFFSET_MAX) next.disabled = true;
+
+    box.appendChild(h('div', { class: 'dict-daterow' }, [
+      prev,
+      h('div', { class: 'dict-date', id: 'dictDate' }, [
+        document.createTextNode(dateLabel(key)),
+        h('span', { class: 'wt', text: dictWeekTag(dictOffset) })
+      ]),
+      next
+    ]));
+
+    /* ── 점수 입력 ── */
+    var input = h('input', {
+      type: 'number', id: 'dictInput', min: '0', max: '100', step: '1',
+      inputmode: 'numeric', autocomplete: 'off',
+      placeholder: '0~100',
+      value: typing !== null ? typing : (score === null ? '' : String(score)),
+      'aria-label': '금요일 받아쓰기 점수'
+    });
+    var saveBtn = h('button', {
+      class: 'dict-save', type: 'button', text: '저장',
+      dataset: { dictSave: '1' }, 'aria-label': '받아쓰기 점수 저장'
+    });
+    box.appendChild(h('form', { class: 'dict-form', autocomplete: 'off' }, [
+      input, h('span', { class: 'dict-unit', text: '점' }), saveBtn
+    ]));
+
+    /* ── 최근 기록 ── */
+    var keys = Object.keys((state.dictation && state.dictation.scores) || {}).sort().reverse();
+    keys = keys.filter(function (k) { return dictScore(k) !== null; }).slice(0, 5);
+    if (!keys.length) {
+      box.appendChild(h('p', { class: 'dict-empty', text: '아직 기록이 없어요. 금요일 점수를 남기면 여기에 쌓여요!' }));
+    } else {
+      var his = h('ul', { class: 'dict-his', id: 'dictHistory' });
+      keys.forEach(function (k) {
+        var d = parseYmd(k);
+        his.appendChild(h('li', {
+          class: k === key ? 'on' : '',
+          dataset: { dictKey: k },
+          title: dateLabel(k) + ' 받아쓰기 ' + dictScore(k) + '점',
+          role: 'button'
+        }, [
+          h('span', { text: mdLabel(k) + '(' + WEEK[d.getDay()] + ')' }),
+          h('b', { text: dictScore(k) + '점' })
+        ]));
+      });
+      box.appendChild(his);
+    }
+
+    box.appendChild(h('p', { class: 'dict-hint', text: '저장하면 가족 모두의 화면에 함께 보여요' }));
+  }
 
   /* ═══════════ 수업 카운터 ═══════════ */
   function classSummary() {
@@ -2515,7 +2854,7 @@
 
   /* ═══════════ 하이파이브 ═══════════ */
   function isKidDone(kidId) {
-    var list = state.tasks[kidId];
+    var list = tasksOn(kidId, todayKey());
     if (!list || !list.length) return false;
     var rec = dayRead(todayKey());
     return list.every(function (t) { return !!rec.kids[kidId][t.id]; });
@@ -3247,7 +3586,17 @@
     fetchRemote().then(function (remote) {
       syncFailCount = 0;
       if (remote && typeof remote === 'object') {
-        applyRemote(remote, true);   // 서버에 기록이 있으면 그것을 그대로 쓴다
+        var applied = applyRemote(remote, true);   // 서버에 기록이 있으면 그것을 그대로 쓴다
+        if (!applied && !shadow) {
+          /* 서버의 마지막 기록이 이 기기에서 올라온 것이면(새로고침 후) applyRemote가 건너뛰어
+             비교 기준이 비어 있다. 서버 상태를 기준으로 삼아 이후 변경이 다시 올라가게 한다. */
+          var base = {};
+          Object.keys(remote).forEach(function (k) {
+            if (k === '_sync' || SYNC_LOCAL_ONLY.indexOf(k) !== -1) return;
+            base[k] = remote[k];
+          });
+          shadow = cloneData(normalize(base));
+        }
         setSyncMode('ok');
       } else {
         seedServer();                // 서버가 비어 있을 때만 이 기기 기록을 올린다
