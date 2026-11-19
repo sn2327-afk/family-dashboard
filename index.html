@@ -1350,6 +1350,112 @@
     .stamp-board{grid-template-columns:repeat(6,1fr);}
     .stamps{grid-template-columns:repeat(6,1fr);}
   }
+  /* ───────── 엄마 전용 코인 잠금 ───────── */
+  .lock-pill{
+    display:inline-flex;align-items:center;gap:4px;
+    font:inherit;font-size:11.5px;font-weight:800;letter-spacing:-.1px;
+    padding:4px 10px 4px 8px;border-radius:999px;cursor:pointer;
+    background:rgba(255,255,255,.86);border:2px solid #F6E5C8;color:#A98650;
+    box-shadow:0 2px 0 rgba(240,222,206,.7);
+    transition:transform .16s ease, background .2s ease, color .2s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .lock-pill .sync-ic{font-size:11px;line-height:1;display:inline-block;}
+  .lock-pill.on{border-color:#FBDDE4;color:#B5636F;background:#FFF3F6;}
+  .lock-pill:active{transform:scale(.96);}
+
+  .mom-lockbar{
+    display:block;
+    margin:0 0 11px;padding:11px 13px;border-radius:18px;
+    background:linear-gradient(120deg,#FFF8E3,#FFF3F6);
+    border:2px dashed #F3DEB8;
+  }
+  .mom-lockbar.on{background:linear-gradient(120deg,#EFFAF4,#F4F9FF);border-color:#CFEBDF;}
+  .mlb-head{display:flex;align-items:flex-start;gap:9px;}
+  .mom-lockbar .mlb-ic{font-size:19px;line-height:1.15;flex:0 0 auto;}
+  .mom-lockbar .mlb-tx{flex:1 1 auto;min-width:0;}
+  .mom-lockbar .mlb-tx b{display:block;font-size:13px;font-weight:800;color:#8A6413;letter-spacing:-.2px;}
+  .mom-lockbar.on .mlb-tx b{color:#2C8069;}
+  .mom-lockbar .mlb-tx small{display:block;margin-top:1px;font-size:11px;font-weight:700;color:#B49B7C;line-height:1.35;}
+  .mom-lockbar.on .mlb-tx small{color:#7FA898;}
+  .mlb-acts{display:flex;gap:7px;margin-top:9px;}
+  .mlb-acts .mlb-btn{flex:1 1 auto;min-height:40px;}
+  .mlb-btn{
+    min-height:38px;padding:0 13px;border-radius:12px;border:none;
+    font:inherit;font-size:12.5px;font-weight:800;cursor:pointer;
+    background:linear-gradient(180deg,#FFF3C6,#FFE6A8);color:#8A6413;
+    box-shadow:0 2px 0 rgba(235,205,155,.75);
+  }
+  .mlb-btn.ghost{background:#FFFDF7;color:#A08E84;box-shadow:0 2px 0 rgba(233,220,207,.8);}
+  .mlb-btn.lock{background:#FFF2F4;color:#B5636F;box-shadow:0 2px 0 rgba(246,214,220,.9);}
+  .mlb-btn:active{transform:translateY(2px);box-shadow:none;}
+
+  /* 잠긴 동안에는 엄마만 쓰는 조절·관리 도구를 감춘다 */
+  body.mom-locked .w-adj,
+  body.mom-locked .shop-custom,
+  body.mom-locked #shopManage,
+  body.mom-locked #shopHist .mini,
+  body.mom-locked .coin-bar .cb-btn[data-coin-delta]{display:none !important;}
+  .coin-bar .cb-lock{
+    display:none;min-height:30px;padding:0 11px;border-radius:10px;border:none;
+    background:#FFFDF7;color:#A98650;font:inherit;font-size:11.5px;font-weight:800;
+    box-shadow:0 2px 0 rgba(235,205,155,.7);cursor:pointer;
+  }
+  body.mom-locked .coin-bar .cb-lock{display:inline-flex;align-items:center;}
+
+  /* 교환할 사람 고르기 (은우·다윤·소민 누구든) */
+  .shop-chooser{margin:0 0 4px;padding:11px 12px;border-radius:18px;background:#FFFAF2;border:2px solid #FBE7CF;}
+  .shop-chooser .sc-label{display:block;font-size:11.5px;font-weight:800;color:#A98A5E;margin-bottom:6px;letter-spacing:-.2px;}
+  .sc-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
+  .sc-chip{
+    display:flex;flex-direction:column;align-items:center;gap:1px;
+    padding:8px 6px;border-radius:14px;border:2px solid #F3E1CC;background:#fff;
+    font:inherit;cursor:pointer;box-shadow:0 2px 0 rgba(240,224,208,.6);
+    transition:transform .12s,border-color .16s,background .16s;
+  }
+  .sc-chip.on{border-color:#FFB27A;background:linear-gradient(160deg,#FFF2D9,#FFF9F2);box-shadow:0 3px 0 rgba(255,170,120,.5);}
+  .sc-chip:active{transform:translateY(2px);box-shadow:none;}
+  .sc-chip .sc-em{font-size:20px;line-height:1.1;}
+  .sc-chip .sc-tx{text-align:center;line-height:1.15;}
+  .sc-chip .sc-tx b{display:block;font-size:11.5px;font-weight:800;color:#8A6A45;letter-spacing:-.3px;}
+  .sc-chip .sc-tx small{display:block;font-family:var(--hand);font-size:15px;color:#8A6413;}
+  .sc-chip.on .sc-tx b{color:#A05C1E;}
+  .sc-chip .sc-on{display:none;font-size:9px;font-weight:800;color:#C57A2E;}
+  .sc-chip.on .sc-on{display:block;}
+  .sc-now{margin:8px 2px 0;font-size:11px;font-weight:700;color:#A1908A;line-height:1.4;}
+  .sc-now b{color:#A9782F;}
+
+  /* 비밀번호 입력 창 */
+  .lock-veil{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(91,74,64,.42);}
+  .lock-veil[hidden]{display:none;}
+  .lock-box{
+    position:relative;width:100%;max-width:330px;padding:22px 20px 18px;
+    background:linear-gradient(170deg,#FFFDF8,#FFF7F2);
+    border:3px solid #FFF0DF;border-radius:24px;
+    box-shadow:0 18px 44px rgba(120,90,70,.3);text-align:center;
+  }
+  .lock-box .lock-x{position:absolute;top:8px;right:10px;border:none;background:transparent;color:#C3AE9F;font:inherit;font-size:17px;font-weight:800;cursor:pointer;padding:4px 7px;line-height:1;}
+  .lock-box .lock-emoji{font-size:30px;line-height:1;}
+  .lock-box h3{margin:6px 0 2px;font-size:18px;color:#6B4E37;letter-spacing:-.3px;}
+  .lock-box p.lock-sub{margin:0 0 12px;font-size:12px;font-weight:700;color:#A1908A;}
+  .lock-pin{
+    display:block;margin:0 auto;width:158px;text-align:center;letter-spacing:10px;
+    font-family:var(--hand);font-size:24px;padding:8px 12px 8px 22px;border-radius:15px;
+    border:2px solid #F1DFCB;background:#fff;color:#5B4A40;min-height:52px;
+  }
+  .lock-pin + .lock-pin{margin-top:8px;letter-spacing:0;font-size:20px;padding-left:12px;}
+  .lock-pin:focus{outline:none;border-color:#FFC98A;box-shadow:0 0 0 4px #FFF3DC;}
+  .lock-msg{min-height:17px;margin:8px 0 4px;font-size:11.5px;font-weight:800;color:#C2636F;letter-spacing:-.2px;}
+  .lock-keep{display:flex;align-items:center;gap:6px;justify-content:center;margin:2px 0 12px;font-size:11.5px;font-weight:700;color:#96837A;cursor:pointer;}
+  .lock-keep[hidden]{display:none;}
+  .lock-keep input{width:16px;height:16px;accent-color:#FFC271;margin:0;}
+  .lock-go{width:100%;min-height:48px;border:none;border-radius:15px;background:linear-gradient(180deg,#FFE6A8,#FFD98A);color:#7A5712;font:inherit;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 3px 0 rgba(230,190,120,.75);}
+  .lock-go:active{transform:translateY(2px);box-shadow:none;}
+  .lock-hint{margin:9px 2px 0;font-size:10.5px;font-weight:700;color:#C0AA9A;line-height:1.4;}
+  @keyframes lockShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+  .lock-box.shake{animation:lockShake .38s ease;}
+  body.lock-veil-open{overflow:hidden;}
+
 </style>
 </head>
 <body>
@@ -1366,6 +1472,8 @@
       <div class="today" id="todayLine">오늘</div>
       <button class="sync-pill init" id="syncPill" type="button" aria-live="polite"
               aria-label="가족 동기화 상태"><span class="sync-ic" aria-hidden="true">☁️</span><span class="sync-tx">연결 중…</span></button>
+      <button class="lock-pill" id="momPill" type="button" aria-live="polite"
+              aria-label="엄마 모드 비밀번호로 열기"><span class="sync-ic" aria-hidden="true">🔒</span><span class="sync-tx">엄마 모드</span></button>
     </div>
     <div class="hero-partners" aria-label="우리집 포켓몬 파트너">
       <svg class="hp-ball" viewBox="0 0 40 40" role="img" aria-label="몬스터볼">
@@ -1460,6 +1568,7 @@
         <p>은우·다윤·소민 코인을 모아서 맛있는 걸로 바꿔요</p>
       </div>
     </div>
+    <div class="mom-lockbar" id="momLockBar" aria-live="polite"></div>
     <div class="shop-wallets" id="shopWallets"></div>
     <div class="shop-custom">
       <label for="shopAmt">직접 조절 · <b id="shopCustomWho">은우</b></label>
@@ -1468,10 +1577,11 @@
       <button class="cb-btn plus" type="button" id="shopCustomPut">넣기</button>
       <button class="cb-btn minus" type="button" id="shopCustomTake">빼기</button>
     </div>
+    <div class="shop-chooser" id="shopChooser" aria-label="교환할 사람 고르기"></div>
     <div class="shop-grid" id="shopGrid"></div>
-    <p class="shop-note">💡 교환할 지갑을 먼저 고르고, [교환하기]를 누르면 코인이 빠지고 내역에 쌓여요.</p>
+    <p class="shop-note">💡 위에서 누구 코인으로 바꿀지 고르고, [교환하기]를 누르면 코인이 빠지고 내역에 이름이 남아요.</p>
 
-    <details class="settings">
+    <details class="settings" id="shopManage">
       <summary>⚙️ 보상 메뉴 관리</summary>
       <form class="add-row" id="shopForm" autocomplete="off">
         <input type="text" id="shopNewLabel" maxlength="30" placeholder="새 보상 (예: 팝콘)">
@@ -1664,6 +1774,24 @@
 </div>
 <div id="toast" role="status" aria-live="polite"></div>
 
+<!-- 엄마 모드 비밀번호 입력 창 -->
+<div class="lock-veil" id="lockVeil" hidden>
+  <div class="lock-box" id="lockBox" role="dialog" aria-modal="true" aria-labelledby="lockTitle" aria-describedby="lockSub">
+    <button class="lock-x" type="button" id="lockClose" aria-label="닫기">✕</button>
+    <div class="lock-emoji" id="lockEmoji" aria-hidden="true">🔒</div>
+    <h3 id="lockTitle">엄마 모드</h3>
+    <p class="lock-sub" id="lockSub">비밀번호 4자리를 넣어 주세요</p>
+    <form id="lockForm" autocomplete="off">
+      <input class="lock-pin" id="lockPin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="••••" autocomplete="off" aria-label="4자리 비밀번호">
+      <input class="lock-pin" id="lockPin2" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="새 비밀번호 한 번 더" autocomplete="off" aria-label="새 비밀번호 확인" hidden>
+      <p class="lock-msg" id="lockMsg" role="status"></p>
+      <label class="lock-keep" id="lockKeepWrap"><input type="checkbox" id="lockKeep"><span>이 기기 잠금 해제 유지</span></label>
+      <button class="lock-go" type="submit" id="lockGo">열기</button>
+      <p class="lock-hint" id="lockHint">기본 비밀번호는 0203이에요 · 연 뒤에 바꿀 수 있어요</p>
+    </form>
+  </div>
+</div>
+
 <script>
 window.__ART__ = {
   eunwoo: 'data:image/webp;base64,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',
@@ -1676,6 +1804,24 @@ window.__ART__ = {
 
   /* ═══════════ 기본 정의 ═══════════ */
   var KEY = 'familyDashboard.v1';
+
+  /* ═══════════ 엄마 전용 잠금 (코인·보상 메뉴는 엄마만) ═══════════ */
+  var LOCK_KEEP_KEY = 'familyDashboard.lockKeep.v1';   // 이 기기만: 열어 둔 채로 쓰기
+  var LOCK_DEFAULT_PIN = '0203';
+  /* 4자리 비밀번호를 그대로 저장하지 않고 짧은 해시로만 남긴다 */
+  function pinHash(pin) {
+    var s = 'fam-coin-lock:' + String(pin);
+    var h1 = 0x811c9dc5, h2 = 0x1000193;
+    for (var i = 0; i < s.length; i++) {
+      var c = s.charCodeAt(i);
+      h1 = ((h1 ^ c) * 16777619) >>> 0;
+      h2 = (((h2 << 5) + h2 + c) * 2654435761) >>> 0;
+    }
+    return ('0000000' + h1.toString(16)).slice(-8) + ('0000000' + h2.toString(16)).slice(-8);
+  }
+  var LOCK_DEFAULT_HASH = pinHash(LOCK_DEFAULT_PIN);
+  var momOpen = false;        // 이 화면에서 엄마 모드가 열렸는지 (기본은 잠김)
+  var lockMode = 'unlock';    // 'unlock' | 'change'
   var WEEK = ['일', '월', '화', '수', '목', '금', '토'];
 
   /* 그림(치비 일러스트) — build.py가 base64로 넣어 준다 */
@@ -1708,7 +1854,7 @@ window.__ART__ = {
   var SHOP_ITEM_MAX = 9999;
   var SHOP_DEFAULT = [
     { id: 'shop-ice', emoji: '🍦', label: '아이스크림 / 편의점 간식', cost: 5 },
-    { id: 'shop-tanghulu', emoji: '🍡', label: '탕후루 / 떡볶이', cost: 10 },
+    { id: 'shop-tanghulu', emoji: '🌶️', label: '떡볶이', cost: 10 },
     { id: 'shop-mala', emoji: '🍲', label: '마라탕', cost: 20 },
     { id: 'shop-chicken', emoji: '🍗', label: '치킨', cost: 25 },
     { id: 'shop-pizza', emoji: '🍕', label: '피자', cost: 30 }
@@ -1819,6 +1965,7 @@ window.__ART__ = {
       stamps: [],
       chatAuthor: 'mom',
       chat: [],
+      lock: { pinHash: LOCK_DEFAULT_HASH, changedAt: null },
       updatedAt: null
     };
   }
@@ -1942,10 +2089,17 @@ window.__ART__ = {
       s.shop.items = (Array.isArray(rawShop.items) ? rawShop.items : []).filter(function (x) {
         return x && typeof x.id === 'string' && x.id && typeof x.label === 'string' && String(x.label).trim() !== '';
       }).map(function (x) {
+        var label = String(x.label).trim().slice(0, 30);
+        var emoji = (typeof x.emoji === 'string' && x.emoji) ? x.emoji.slice(0, 4) : '🍽️';
+        /* 기본 메뉴에서 탕후루는 뺐다 — 예전 저장 기록에 남은 이름도 '떡볶이'로 옮겨 적는다 */
+        if (label.indexOf('탕후루') !== -1) {
+          label = label.replace(/탕후루\s*\/?\s*/g, '').trim() || '떡볶이';
+          if (emoji.indexOf('🍡') !== -1) emoji = '🌶️';
+        }
         return {
           id: String(x.id),
-          emoji: (typeof x.emoji === 'string' && x.emoji) ? x.emoji.slice(0, 4) : '🍽️',
-          label: String(x.label).trim().slice(0, 30),
+          emoji: emoji,
+          label: label,
           cost: clampInt(x.cost, 1, SHOP_ITEM_MAX, 5)
         };
       }).slice(0, 40);
@@ -1977,6 +2131,11 @@ window.__ART__ = {
       return x && x.id && typeof x.text === 'string' && x.text.trim() !== '';
     }).slice(-200);
     if (!s.chatAuthor) s.chatAuthor = 'mom';
+
+    /* 엄마 전용 잠금 — 비밀번호 해시만 저장한다 */
+    s.lock = Object.assign({}, d.lock, (raw.lock && typeof raw.lock === 'object' && !Array.isArray(raw.lock)) ? raw.lock : {});
+    if (typeof s.lock.pinHash !== 'string' || !/^[0-9a-f]{16}$/.test(s.lock.pinHash)) s.lock.pinHash = LOCK_DEFAULT_HASH;
+    if (s.lock.changedAt != null && typeof s.lock.changedAt !== 'string') s.lock.changedAt = null;
 
     return s;
   }
@@ -2468,6 +2627,12 @@ window.__ART__ = {
     var coinBar = h('div', { class: 'coin-bar', id: 'coinbar-' + kidId }, [
       h('span', { class: 'cb-name', text: '🪙 ' + cfg.name + ' 코인' }),
       h('span', { class: 'cb-val', id: 'coinAmt-' + kidId, text: '0' }),
+      h('button', {
+        class: 'cb-lock', type: 'button', text: '🔒 엄마만',
+        dataset: { lockOpen: '1' },
+        'aria-label': cfg.name + ' 코인은 엄마만 바꿀 수 있어요 · 비밀번호로 열기',
+        title: '엄마만 코인을 바꿀 수 있어요'
+      }),
       h('button', {
         class: 'cb-btn minus', type: 'button', text: '−1',
         dataset: { coinDelta: '-1', coinKid: kidId },
@@ -3303,6 +3468,7 @@ window.__ART__ = {
 
   function adjustCoins(kid, delta, label) {
     if (COIN_KIDS.indexOf(kid) === -1 || !delta) return;
+    if (!momOpen) { openLockVeil('unlock'); return; }   // 코인 조절은 엄마 모드에서만
     var cur = coinBal(kid);
     var next = cur + delta;
     if (next < 0) {
@@ -3328,6 +3494,7 @@ window.__ART__ = {
   }
 
   function addShopItem() {
+    if (!momOpen) { openLockVeil('unlock'); return; }
     var nameEl = $('#shopNewLabel');
     var costEl = $('#shopNewCost');
     var label = (nameEl.value || '').trim();
@@ -3349,6 +3516,7 @@ window.__ART__ = {
   }
 
   function editShopCost(id, rawValue) {
+    if (!momOpen) { renderShop(); return; }
     var item = state.shop.items.filter(function (x) { return x.id === id; })[0];
     if (!item) return;
     var v = clampInt(rawValue, 1, SHOP_ITEM_MAX, item.cost);
@@ -3360,6 +3528,7 @@ window.__ART__ = {
   }
 
   function deleteShopItem(id) {
+    if (!momOpen) { openLockVeil('unlock'); return; }
     var item = state.shop.items.filter(function (x) { return x.id === id; })[0];
     if (!item) return;
     if (!window.confirm('“' + item.label + '” 보상을 상점에서 뺄까요?\n지난 교환 내역은 그대로 남아요.')) return;
@@ -3408,6 +3577,7 @@ window.__ART__ = {
   }
 
   function deleteHistory(id) {
+    if (!momOpen) { openLockVeil('unlock'); return; }
     var h0 = state.shop.history.filter(function (x) { return x.id === id; })[0];
     if (!h0) return;
     if (!window.confirm('“' + h0.label + '” 교환 내역을 지울까요?\n코인은 다시 돌아오지 않아요.')) return;
@@ -3451,6 +3621,36 @@ window.__ART__ = {
         ])
       ]));
     });
+
+    /* 교환할 사람 고르기 — 은우·다윤·소민 누구든 한눈에 */
+    var chooser = $('#shopChooser');
+    if (chooser) {
+      clear(chooser);
+      chooser.appendChild(h('span', { class: 'sc-label', text: '누구 코인으로 교환할까요?' }));
+      var scRow = h('div', { class: 'sc-row' });
+      COIN_KIDS.forEach(function (kid) {
+        var on = kid === shopKid;
+        scRow.appendChild(h('button', {
+          class: 'sc-chip' + (on ? ' on' : ''), type: 'button',
+          dataset: { shopKid: kid },
+          'aria-pressed': on ? 'true' : 'false',
+          'aria-label': coinName(kid) + ' 코인으로 교환하기 · 지금 ' + coinBal(kid) + '개'
+        }, [
+          h('span', { class: 'sc-em', text: coinEmoji(kid) }),
+          h('span', { class: 'sc-tx' }, [
+            h('b', { text: coinName(kid) }),
+            h('small', { text: coinBal(kid) + '개' })
+          ]),
+          h('span', { class: 'sc-on', text: '선택됨' })
+        ]));
+      });
+      chooser.appendChild(scRow);
+      chooser.appendChild(h('p', { class: 'sc-now' }, [
+        document.createTextNode('지금 '),
+        h('b', { text: coinName(shopKid) }),
+        document.createTextNode(' 코인 ' + coinBal(shopKid) + '개로 교환해요 · 교환 내역에 ' + coinName(shopKid) + ' 이름이 남아요')
+      ]));
+    }
 
     /* 직접 넣기·빼기 */
     var customLabel = $('#shopCustomWho');
@@ -3547,6 +3747,156 @@ window.__ART__ = {
         h('b', { text: (x.amount > 0 ? '+' : '') + x.amount })
       ]));
     });
+  }
+
+  /* ═══════════ 엄마 모드 잠금 ═══════════ */
+  function keepOn() {
+    try { return localStorage.getItem(LOCK_KEEP_KEY) === '1'; } catch (e) { return false; }
+  }
+
+  function renderLockUI() {
+    document.body.classList.toggle('mom-locked', !momOpen);
+
+    var pill = $('#momPill');
+    if (pill) {
+      var ic = pill.querySelector('.sync-ic');
+      var tx = pill.querySelector('.sync-tx');
+      if (ic) ic.textContent = '🔒';
+      if (tx) tx.textContent = momOpen ? '잠그기' : '엄마 모드';
+      if (momOpen) pill.classList.add('on'); else pill.classList.remove('on');
+      pill.setAttribute('aria-label', momOpen ? '엄마 모드를 다시 잠그기' : '엄마 모드 비밀번호로 열기');
+    }
+
+    var bar = $('#momLockBar');
+    if (!bar) return;
+    clear(bar);
+    bar.classList.toggle('on', momOpen);
+
+    if (momOpen) {
+      bar.appendChild(h('div', { class: 'mlb-head' }, [
+        h('span', { class: 'mlb-ic', text: '🔓' }),
+        h('div', { class: 'mlb-tx' }, [
+          h('b', { text: '엄마 모드 열림' }),
+          h('small', { text: keepOn() ? '이 기기에서는 열어 둔 채로 써요' : '이 기기에서는 새로 열면 다시 잠겨요' })
+        ])
+      ]));
+      bar.appendChild(h('div', { class: 'mlb-acts' }, [
+        h('button', {
+          class: 'mlb-btn ghost', type: 'button', text: '비밀번호 변경',
+          dataset: { lockChange: '1' }, 'aria-label': '엄마 모드 비밀번호 바꾸기'
+        }),
+        h('button', {
+          class: 'mlb-btn lock', type: 'button', text: '🔒 잠그기',
+          dataset: { lockNow: '1' }, 'aria-label': '지금 바로 다시 잠그기'
+        })
+      ]));
+    } else {
+      bar.appendChild(h('div', { class: 'mlb-head' }, [
+        h('span', { class: 'mlb-ic', text: '🔒' }),
+        h('div', { class: 'mlb-tx' }, [
+          h('b', { text: '코인은 엄마만 조절해요' }),
+          h('small', { text: '아이들은 코인 확인·먹거리 교환만 할 수 있어요' })
+        ])
+      ]));
+      bar.appendChild(h('div', { class: 'mlb-acts' }, [
+        h('button', {
+          class: 'mlb-btn', type: 'button', text: '🔒 엄마만 코인 올리기',
+          dataset: { lockOpen: '1' }, 'aria-label': '비밀번호를 넣고 엄마 모드 열기'
+        })
+      ]));
+    }
+  }
+
+  function openLockVeil(mode) {
+    lockMode = (mode === 'change') ? 'change' : 'unlock';
+    var veil = $('#lockVeil');
+    if (!veil) return;
+    var change = lockMode === 'change';
+    $('#lockEmoji').textContent = change ? '🔑' : '🔒';
+    $('#lockTitle').textContent = change ? '비밀번호 바꾸기' : '엄마 모드';
+    $('#lockSub').textContent = change ? '새 비밀번호 4자리를 두 번 넣어 주세요' : '비밀번호 4자리를 넣어 주세요';
+    $('#lockMsg').textContent = '';
+    $('#lockPin').value = '';
+    $('#lockPin2').value = '';
+    $('#lockPin2').hidden = !change;
+    $('#lockKeepWrap').hidden = change;
+    $('#lockKeep').checked = keepOn();
+    $('#lockGo').textContent = change ? '바꾸기' : '열기';
+    $('#lockHint').textContent = change
+      ? '바꿔도 지금 기록은 그대로예요'
+      : '기본 비밀번호는 0203이에요 · 연 뒤에 바꿀 수 있어요';
+    veil.hidden = false;
+    document.body.classList.add('lock-veil-open');
+    setTimeout(function () {
+      try { $('#lockPin').focus(); } catch (e) {}
+    }, 70);
+  }
+
+  function closeLockVeil() {
+    var veil = $('#lockVeil');
+    if (!veil) return;
+    veil.hidden = true;
+    document.body.classList.remove('lock-veil-open');
+    var box = $('#lockBox');
+    if (box) box.classList.remove('shake');
+  }
+
+  function lockShake(msg) {
+    $('#lockMsg').textContent = msg || '비밀번호가 달라요 · 다시 넣어 주세요';
+    var box = $('#lockBox');
+    if (box) {
+      box.classList.remove('shake');
+      void box.offsetWidth;
+      box.classList.add('shake');
+      setTimeout(function () { box.classList.remove('shake'); }, 420);
+    }
+    try { $('#lockPin').select(); } catch (e) {}
+  }
+
+  function submitLock(ev) {
+    if (ev) ev.preventDefault();
+    var pin = String($('#lockPin').value || '').replace(/\D/g, '').slice(0, 4);
+    if (pin.length !== 4) { lockShake('숫자 4자리를 넣어 주세요'); return; }
+
+    if (lockMode === 'change') {
+      var pin2 = String($('#lockPin2').value || '').replace(/\D/g, '').slice(0, 4);
+      if (pin2.length !== 4) { lockShake('새 비밀번호를 한 번 더 넣어 주세요'); return; }
+      if (pin !== pin2) { lockShake('두 번 넣은 비밀번호가 달라요'); return; }
+      state.lock = state.lock || {};
+      state.lock.pinHash = pinHash(pin);
+      state.lock.changedAt = new Date().toISOString();
+      save(true);
+      momOpen = true;
+      closeLockVeil();
+      renderLockUI();
+      toast('비밀번호를 바꿨어요 🔑 다음부터 새 번호로 열 수 있어요');
+      return;
+    }
+
+    var want = (state.lock && state.lock.pinHash) || LOCK_DEFAULT_HASH;
+    if (pinHash(pin) !== want) { lockShake('비밀번호가 달라요 · 다시 넣어 주세요'); return; }
+
+    var keep = !!($('#lockKeep') && $('#lockKeep').checked);
+    try {
+      if (keep) localStorage.setItem(LOCK_KEEP_KEY, '1');
+      else localStorage.removeItem(LOCK_KEEP_KEY);
+    } catch (e) {}
+    momOpen = true;
+    closeLockVeil();
+    renderLockUI();
+    renderShop();
+    KID_ORDER.forEach(function (k) { renderKid(k); });
+    toast('엄마 모드 열림 🔓 이제 코인을 올릴 수 있어요');
+  }
+
+  function lockNow(silent) {
+    momOpen = false;
+    try { localStorage.removeItem(LOCK_KEEP_KEY); } catch (e) {}
+    closeLockVeil();
+    renderLockUI();
+    renderShop();
+    KID_ORDER.forEach(function (k) { renderKid(k); });
+    if (!silent) toast('다시 잠갔어요 🔒');
   }
 
   /* ═══════════ 우리집 포켓몬 도감 ═══════════ */
@@ -4393,11 +4743,50 @@ window.__ART__ = {
     renderListTabs();
     renderListBody();
     renderDinner();
+    renderLockUI();
     renderSaved();
   }
 
   /* ═══════════ 이벤트 연결 ═══════════ */
   function bind() {
+    // 엄마 모드 잠금 — 상단 잠금 버튼과 비밀번호 창
+    var momPill = $('#momPill');
+    if (momPill) momPill.addEventListener('click', function () {
+      if (momOpen) lockNow(); else openLockVeil('unlock');
+    });
+    var lockBar = $('#momLockBar');
+    if (lockBar) lockBar.addEventListener('click', function (ev) {
+      var t = ev.target.closest ? ev.target.closest('[data-lock-open],[data-lock-now],[data-lock-change]') : null;
+      if (!t) return;
+      if (t.dataset.lockOpen) { openLockVeil('unlock'); return; }
+      if (t.dataset.lockChange) { openLockVeil('change'); return; }
+      if (t.dataset.lockNow) lockNow();
+    });
+    var veil = $('#lockVeil');
+    if (veil) {
+      veil.addEventListener('click', function (ev) { if (ev.target === veil) closeLockVeil(); });
+      $('#lockClose').addEventListener('click', closeLockVeil);
+      $('#lockForm').addEventListener('submit', submitLock);
+      ['lockPin', 'lockPin2'].forEach(function (id) {
+        var el = $('#' + id);
+        if (!el) return;
+        el.addEventListener('input', function () {
+          var v = String(el.value || '').replace(/\D/g, '').slice(0, 4);
+          if (el.value !== v) el.value = v;
+          if (v.length !== 4) return;
+          if (lockMode === 'change' && id === 'lockPin') {
+            var p2 = $('#lockPin2');
+            if (p2) { p2.hidden = false; try { p2.focus(); } catch (e) {} }
+            return;
+          }
+          submitLock();
+        });
+      });
+      document.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Escape' && veil && !veil.hidden) closeLockVeil();
+      });
+    }
+
     // 도마뱀 밥 체크
     $('#geoChecks').addEventListener('click', function (ev) {
       var btn = ev.target.closest('[data-geo]');
@@ -4426,6 +4815,8 @@ window.__ART__ = {
       var cbar = $('#coinbar-' + kid);
       if (cbar) {
         cbar.addEventListener('click', function (ev) {
+          var lk = ev.target.closest('[data-lock-open]');
+          if (lk) { openLockVeil('unlock'); return; }
           var b = ev.target.closest('[data-coin-delta]');
           if (!b) return;
           adjustCoins(kid, parseInt(b.dataset.coinDelta, 10) || 0);
@@ -4608,6 +4999,11 @@ window.__ART__ = {
     $('#shopGrid').addEventListener('click', function (ev) {
       var b = ev.target.closest('[data-buy]');
       if (b) exchangeReward(b.dataset.buy);
+    });
+    var shopChooser = $('#shopChooser');
+    if (shopChooser) shopChooser.addEventListener('click', function (ev) {
+      var c = ev.target.closest ? ev.target.closest('[data-shop-kid]') : null;
+      if (c) setShopKid(c.dataset.shopKid);
     });
     $('#shopCustomPut').addEventListener('click', function () {
       var v = clampInt($('#shopAmt').value, 1, COIN_MAX, 0);
@@ -4815,6 +5211,7 @@ window.__ART__ = {
   /* ═══════════ 시작 ═══════════ */
   function start() {
     state = load();
+    try { momOpen = localStorage.getItem(LOCK_KEEP_KEY) === '1'; } catch (e) { momOpen = false; }
     KID_ORDER.forEach(buildKidSection);
     buildFolders();
     var savedFolder = 'today';
