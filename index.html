@@ -3935,8 +3935,9 @@ window.__ART__ = {
       line: [{ id: 172, name: '피츄' }, { id: 25, name: '피카츄' }, { id: 26, name: '라이츄' }]
     },
     {
-      no: '#002', tag: '다윤 파트너', type: '물', icon: '💧', accent: '#8FD0F5',
+      no: '#002', tag: '다윤 파트너', type: '노말', icon: '⭐', accent: '#8FD0F5',
       who: 'dayun', metric: 'earned', step: 10, step3: 30, unit: '개', how: '누적 코인',
+      types: [{ type: '노말', icon: '⭐' }, { type: '물', icon: '💧' }, { type: '페어리', icon: '✨' }],
       line: [{ id: 133, name: '이브이' }, { id: 134, name: '샤미드' }, { id: 700, name: '님피아' }]
     },
     {
@@ -3997,6 +3998,12 @@ window.__ART__ = {
     return 1;
   }
 
+  /* 진화 단계별 타입 — types 가 있으면 그 단계 타입, 없으면 도감 기본 타입 */
+  function dexTypeOf(e, stage) {
+    var t = e.types && e.types[stage - 1];
+    return t || { type: e.type, icon: e.icon };
+  }
+
   function evoLine(e, stage) {
     var box = h('div', { class: 'dex-evo' });
     e.line.forEach(function (p, i) {
@@ -4032,6 +4039,7 @@ window.__ART__ = {
       if (stage >= 3) finals++;
 
       var cur = e.line[stage - 1];
+      var tp = dexTypeOf(e, stage);
       var next = e.line[stage] || null;
       var target = stage === 1 ? e.step : e.step3;
       var meta = !next
@@ -4052,7 +4060,7 @@ window.__ART__ = {
       }, [
         h('div', { class: 'dex-top' }, [
           h('span', { class: 'dex-no', text: e.no }),
-          h('span', { class: 'ball', title: e.type + ' 타입', 'aria-label': e.type + ' 타입' }, [h('b')]),
+          h('span', { class: 'ball', title: tp.type + ' 타입', 'aria-label': tp.type + ' 타입' }, [h('b')]),
           h('span', { class: 'dex-tag', text: e.tag })
         ]),
         artBox,
@@ -4061,7 +4069,7 @@ window.__ART__ = {
           h('small', { text: ' No.' + pad3(cur.id) })
         ]),
         evoLine(e, stage),
-        h('div', { class: 'dex-type', text: e.icon + ' ' + e.type + ' 타입 · ' + stage + '단계 ' + DEX_STAGE_NAME[stage - 1] }),
+        h('div', { class: 'dex-type', text: tp.icon + ' ' + tp.type + ' 타입 · ' + stage + '단계 ' + DEX_STAGE_NAME[stage - 1] }),
         gauge,
         h('div', { class: 'dex-meta', text: meta })
       ]));
