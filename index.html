@@ -1230,21 +1230,13 @@
   .dex-top{display:flex;align-items:center;gap:6px;}
   .dex-no{font-family:var(--hand);font-size:13px;color:#C3A791;letter-spacing:.5px;}
   .ball{
-    width:23px;height:23px;flex:0 0 auto;border-radius:50%;
-    background:linear-gradient(180deg,var(--da) 0 46%,#FFFDF6 46% 100%);
-    border:2px solid #fff;
-    box-shadow:0 2px 4px rgba(180,150,130,.26), 0 0 0 1.5px rgba(120,98,80,.16);
-    position:relative;display:grid;place-items:center;
+    width:24px;height:24px;flex:0 0 auto;border-radius:50%;
+    background:
+      url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png') center/contain no-repeat;
+    image-rendering:pixelated;
+    filter:drop-shadow(0 1px 1.5px rgba(140,110,90,.28));
   }
-  .ball::after{
-    content:'';position:absolute;left:-1px;right:-1px;top:50%;height:2px;margin-top:-1px;
-    background:rgba(120,98,80,.35);
-  }
-  .ball b{
-    position:relative;z-index:1;width:15px;height:15px;border-radius:50%;
-    background:#fff;display:grid;place-items:center;font-size:9.5px;line-height:1;
-    box-shadow:0 1px 2px rgba(0,0,0,.14);
-  }
+  .ball::after,.ball b{display:none;}
   .dex-tag{
     margin-left:auto;font-size:9.5px;font-weight:800;color:#B8A091;
     background:#FBF3EA;border-radius:999px;padding:3px 7px;white-space:nowrap;
@@ -1277,6 +1269,11 @@
     backdrop-filter:blur(12px);
     border-bottom:2px solid #FBECDF;
     box-shadow:0 6px 14px rgba(190,165,145,.10);
+  }
+  .folders::after{
+    content:'';position:absolute;right:0;top:0;bottom:0;width:20px;
+    pointer-events:none;
+    background:linear-gradient(90deg,rgba(255,252,247,0),rgba(255,252,247,.96));
   }
   .folders-in{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:1px;min-width:0;max-width:100%;}
   .folders-in::-webkit-scrollbar{display:none;}
