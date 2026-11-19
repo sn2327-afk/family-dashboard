@@ -5147,15 +5147,16 @@ window.__ART__ = {
 
   /* ═══════════ 분류 폴더 (상단 탭) ═══════════ */
   var FOLDERS = [
+    { key: 'all', icon: '📋', label: '전체', ids: null },
     { key: 'today', icon: '🏠', label: '오늘 루틴', ids: ['kid-eunwoo', 'kid-dayun', 'allowanceCard', 'missionCard'] },
     { key: 'shop', icon: '🎁', label: '코인상점', ids: ['shopCard'] },
     { key: 'dex', icon: '📖', label: '포켓몬 도감', ids: ['dexCard'] },
     { key: 'care', icon: '🦎', label: '도마뱀·수업', ids: ['geoCard', 'classCard'] },
-    { key: 'memo', icon: '📝', label: '메모·톡', ids: ['listCard', 'chatCard'] },
-    { key: 'all', icon: '📋', label: '전체', ids: null }
+    { key: 'memo', icon: '📝', label: '메모·톡', ids: ['listCard', 'chatCard'] }
   ];
-  var FOLDER_STORE = 'familyDashboard.folder.v1';
-  var folderNow = 'today';
+  /* v2: '전체'를 맨 앞·기본으로 — 예전에 고였던 'today' 값은 읽지 않는다 */
+  var FOLDER_STORE = 'familyDashboard.folder.v2';
+  var folderNow = 'all';
 
   function buildFolders() {
     var box = $('#folderIn');
@@ -5214,8 +5215,8 @@ window.__ART__ = {
     try { momOpen = localStorage.getItem(LOCK_KEEP_KEY) === '1'; } catch (e) { momOpen = false; }
     KID_ORDER.forEach(buildKidSection);
     buildFolders();
-    var savedFolder = 'today';
-    try { savedFolder = localStorage.getItem(FOLDER_STORE) || 'today'; } catch (e) {}
+    var savedFolder = 'all';
+    try { savedFolder = localStorage.getItem(FOLDER_STORE) || 'all'; } catch (e) {}
     applyFolder(savedFolder);
     bind();
     bindSyncUI();
