@@ -1197,6 +1197,70 @@
     font-size:13px;font-weight:800;padding:6px 8px;border-radius:11px;
   }
 
+  /* ───────── 우리집 몬스터 도감 ───────── */
+  .dex-card-wrap{
+    background:
+      radial-gradient(circle at 100% 0%, #F6F1FF 0%, rgba(246,241,255,0) 55%),
+      radial-gradient(circle at 0% 100%, #FFF4E9 0%, rgba(255,244,233,0) 60%),
+      linear-gradient(170deg,#FFFDFB,#FFF9F5);
+    border-color:#F2E9FA;
+  }
+  .dex-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px;}
+  .dex-cap{font-size:11.5px;font-weight:800;color:#A7958C;background:#FBF5EF;border-radius:999px;padding:6px 12px;}
+  .dex-count{font-family:var(--hand);font-size:13px;color:#8A6F80;}
+  .dex-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:11px;}
+  .dex-card{
+    position:relative;
+    padding:10px 10px 12px;border-radius:20px;
+    background:linear-gradient(175deg,#FFFDF9,#FFF9F3);
+    border:2px solid #F8EADE;
+    box-shadow:0 3px 0 rgba(240,222,206,.55);
+    transition:border-color .2s, box-shadow .2s, background .2s;
+  }
+  .dex-card.st2{border-color:#FBE0C2;background:linear-gradient(175deg,#FFFEFB,#FFF7EC);}
+  .dex-card.st3{
+    border-color:#FFD79C;
+    background:linear-gradient(175deg,#FFFEF6,#FFF3DF);
+    box-shadow:0 3px 0 rgba(255,209,146,.65), 0 8px 18px rgba(255,196,120,.16);
+  }
+  .dex-top{display:flex;align-items:center;gap:6px;}
+  .dex-no{font-family:var(--hand);font-size:13px;color:#C3A791;letter-spacing:.5px;}
+  .ball{
+    width:23px;height:23px;flex:0 0 auto;border-radius:50%;
+    background:linear-gradient(180deg,var(--da) 0 46%,#FFFDF6 46% 100%);
+    border:2px solid #fff;
+    box-shadow:0 2px 4px rgba(180,150,130,.26), 0 0 0 1.5px rgba(120,98,80,.16);
+    position:relative;display:grid;place-items:center;
+  }
+  .ball::after{
+    content:'';position:absolute;left:-1px;right:-1px;top:50%;height:2px;margin-top:-1px;
+    background:rgba(120,98,80,.35);
+  }
+  .ball b{
+    position:relative;z-index:1;width:15px;height:15px;border-radius:50%;
+    background:#fff;display:grid;place-items:center;font-size:9.5px;line-height:1;
+    box-shadow:0 1px 2px rgba(0,0,0,.14);
+  }
+  .dex-tag{
+    margin-left:auto;font-size:9.5px;font-weight:800;color:#B8A091;
+    background:#FBF3EA;border-radius:999px;padding:3px 7px;white-space:nowrap;
+  }
+  .dex-card.st3 .dex-tag{background:#FFF2D6;color:#A9782F;}
+  .dex-art{height:104px;margin:5px 0 1px;display:grid;place-items:center;}
+  .dex-art svg{max-width:112px;height:100%;}
+  .dex-card.st3 .dex-art{height:112px;}
+  .dex-name{font-family:var(--hand);font-size:15.5px;color:#6B5445;text-align:center;line-height:1.2;letter-spacing:-.2px;}
+  .dex-card.st1 .dex-name{color:#B49B86;font-size:14.5px;}
+  .dex-card.st3 .dex-name{color:#8A5C1E;}
+  .dex-type{text-align:center;font-size:10px;font-weight:800;color:#B49B86;margin-top:2px;}
+  .dex-gauge{display:flex;gap:4px;margin-top:8px;}
+  .dex-gauge i{flex:1 1 0;height:8px;border-radius:999px;background:#F1E6DC;}
+  .dex-gauge i.on{background:linear-gradient(90deg,#FFE3A6,#FFC3A8);}
+  .dex-card.st3 .dex-gauge i.on{background:linear-gradient(90deg,#FFE08A,#FFA9C0);}
+  .dex-meta{margin-top:6px;text-align:center;font-size:10px;font-weight:800;color:#B29A86;line-height:1.4;}
+  .dex-card.st3 .dex-meta{color:#A9782F;}
+  .dex-note{margin:11px 0 0;font-size:10.5px;font-weight:700;color:#B7A493;line-height:1.5;}
+
   @media (max-width:359px){
     .stamp-board{grid-template-columns:repeat(6,1fr);}
     .stamps{grid-template-columns:repeat(6,1fr);}
@@ -1213,6 +1277,7 @@
     <a href="#kid-dayun" data-nav="kid-dayun"><span class="ti">👧</span>다윤</a>
     <a href="#allowanceCard" data-nav="allowanceCard"><span class="ti">💰</span>용돈</a>
     <a href="#shopCard" data-nav="shopCard"><span class="ti">🎁</span>상점</a>
+    <a href="#dexCard" data-nav="dexCard"><span class="ti">📖</span>도감</a>
     <a href="#missionCard" data-nav="missionCard"><span class="ti">🎲</span>미션</a>
     <a href="#chatCard" data-nav="chatCard"><span class="ti">💬</span>톡</a>
     <a href="#classCard" data-nav="classCard"><span class="ti">📅</span>수업</a>
@@ -1339,6 +1404,23 @@
       <summary>🪙 코인 조절 기록</summary>
       <ul class="allow-log" id="coinLog"></ul>
     </details>
+  </section>
+
+  <!-- 우리집 몬스터 도감 -->
+  <section class="card wide dex-card-wrap" id="dexCard">
+    <div class="card-head">
+      <span class="ic" style="background:var(--lav-bg)">📖</span>
+      <div>
+        <h2>우리집 몬스터 도감</h2>
+        <p>기록을 모으면 우리집 몬스터가 자라요</p>
+      </div>
+    </div>
+    <div class="dex-head">
+      <span class="dex-cap">📖 도감 현황</span>
+      <span class="dex-count" id="dexCount"></span>
+    </div>
+    <div class="dex-grid" id="dexGrid"></div>
+    <p class="dex-note">✨ 코인을 직접 주면 은우·다윤 몬스터가 자라고, 도마뱀 밥·칭찬 도장·먹거리 교환도 몬스터를 키워요. (코인 자동 적립은 없어요)</p>
   </section>
 
   <!-- 가족 랜덤 미션 · 도장판 -->
@@ -1609,6 +1691,7 @@ window.__ART__ = {
       },
       coins: {
         balances: { eunwoo: 0, dayun: 0 },
+        earned: { eunwoo: 0, dayun: 0 },
         log: []
       },
       shop: {
@@ -1731,9 +1814,12 @@ window.__ART__ = {
     /* 코인 지갑 — 예전 기록에 없으면 0개부터 시작한다 */
     var rawCoins = (raw.coins && typeof raw.coins === 'object' && !Array.isArray(raw.coins)) ? raw.coins : {};
     var rawBal = (rawCoins.balances && typeof rawCoins.balances === 'object' && !Array.isArray(rawCoins.balances)) ? rawCoins.balances : {};
-    s.coins = { balances: {}, log: [] };
+    s.coins = { balances: {}, earned: {}, log: [] };
+    var rawEarned = (rawCoins.earned && typeof rawCoins.earned === 'object' && !Array.isArray(rawCoins.earned)) ? rawCoins.earned : {};
     COIN_KIDS.forEach(function (kid) {
       s.coins.balances[kid] = Math.max(0, clampInt(rawBal[kid], 0, COIN_MAX, 0));
+      /* 누적 획득(도감 진화용) — 예전 기록에는 없으니 지금 잔액만큼은 받은 것으로 본다 */
+      s.coins.earned[kid] = Math.max(s.coins.balances[kid], clampInt(rawEarned[kid], 0, COIN_MAX, 0));
     });
     s.coins.log = (Array.isArray(rawCoins.log) ? rawCoins.log : []).filter(function (x) {
       return x && x.id && COIN_KIDS.indexOf(x.kid) !== -1 && isFinite(x.amount) && Number(x.amount) !== 0;
@@ -2211,6 +2297,7 @@ window.__ART__ = {
     renderGeoChecks();
     renderFeedPanel();
     renderHeader();
+    renderDex();
     var nd = nextFeedDate(today, state.geo.cycleDays || 3);
     toast('오늘 밥 줬어요! 다음은 ' + (nd.getMonth() + 1) + '/' + nd.getDate() + ' (' + WEEK[nd.getDay()] + ')' + '이에요');
   }
@@ -2226,6 +2313,7 @@ window.__ART__ = {
       renderGeoChecks();
       renderFeedPanel();
       renderHeader();
+      renderDex();
       var nd = nextFeedDate(today, state.geo.cycleDays || 3);
       toast('밥 준 날로 기록했어요 · 다음은 ' + (nd.getMonth() + 1) + '/' + nd.getDate() + ' (' + WEEK[nd.getDay()] + ')');
     } else {
@@ -2238,6 +2326,7 @@ window.__ART__ = {
       renderGeoChecks();
       renderFeedPanel();
       renderHeader();
+      renderDex();
     }
   }
 
@@ -3117,6 +3206,7 @@ window.__ART__ = {
     }
     if (next > COIN_MAX) next = COIN_MAX;
     state.coins.balances[kid] = next;
+    if (delta > 0) state.coins.earned[kid] = Math.min(COIN_MAX, (state.coins.earned[kid] || 0) + delta);
     state.coins.log.unshift({
       id: 'cl' + Date.now().toString(36) + Math.random().toString(36).slice(2, 4),
       kid: kid,
@@ -3128,6 +3218,7 @@ window.__ART__ = {
     save(true);
     renderShop();
     renderKid(kid);
+    renderDex();
     toast(KIDS[kid].name + ' 코인 ' + (delta > 0 ? '+' : '') + delta + ' → ' + next + '개');
   }
 
@@ -3198,6 +3289,7 @@ window.__ART__ = {
     save(true);
     renderShop();
     renderKid(kid);
+    renderDex();
     toast(name + ' 코인 ' + item.cost + '개로 ' + item.label + ' 교환 완료! 🎉');
   }
 
@@ -3217,6 +3309,7 @@ window.__ART__ = {
     state.shop.history = state.shop.history.filter(function (x) { return x.id !== id; });
     save(true);
     renderShop();
+    renderDex();
     toast('교환 내역을 지웠어요');
   }
 
@@ -3351,6 +3444,226 @@ window.__ART__ = {
     });
   }
 
+  /* ═══════════ 우리집 몬스터 도감 ═══════════ */
+  var DEX = [
+    {
+      no: '#001', name: '찌릿몽', names: ['알', '찌릿몽', '번개왕'],
+      type: '전기', icon: '⚡', ear: 'bolt',
+      body: '#FFE491', accent: '#FFC02E', ink: '#8A6413',
+      tag: '은우 파트너', metric: 'earned', who: 'eunwoo',
+      step: 10, step3: 30, unit: '개', how: '누적 코인'
+    },
+    {
+      no: '#002', name: '말랑푸', names: ['알', '말랑푸', '물결여왕'],
+      type: '물', icon: '💧', ear: 'drop',
+      body: '#C6E8FB', accent: '#7FC9F1', ink: '#2D6D95',
+      tag: '다윤 파트너', metric: 'earned', who: 'dayun',
+      step: 10, step3: 30, unit: '개', how: '누적 코인'
+    },
+    {
+      no: '#003', name: '게코링', names: ['알', '게코링', '초록수호자'],
+      type: '풀', icon: '🌿', ear: 'leaf',
+      body: '#C4F1DE', accent: '#7FD6B4', ink: '#2C8069',
+      tag: '우리집 도마뱀', metric: 'fed',
+      step: 3, step3: 10, unit: '일', how: '밥 준 날'
+    },
+    {
+      no: '#004', name: '먹보왕', names: ['알', '먹보왕', '대식가킹'],
+      type: '불꽃', icon: '🔥', ear: 'flame',
+      body: '#FFD6C0', accent: '#FF9E76', ink: '#A95C36',
+      tag: '상점 보스', metric: 'exchanges',
+      step: 3, step3: 10, unit: '번', how: '먹거리 교환'
+    },
+    {
+      no: '#005', name: '도장냥', names: ['알', '도장냥', '칭찬대장'],
+      type: '별', icon: '✨', ear: 'star',
+      body: '#E4D8FC', accent: '#C6B5F0', ink: '#6A55A8',
+      tag: '가족 미션', metric: 'stamps',
+      step: 5, step3: 15, unit: '개', how: '칭찬 도장'
+    },
+    {
+      no: '#006', name: '톡톡이', names: ['알', '톡톡이', '수다여왕'],
+      type: '노말', icon: '💬', ear: 'talk',
+      body: '#FFDCE7', accent: '#F7A9C4', ink: '#A8516C',
+      tag: '한줄 톡', metric: 'chat',
+      step: 5, step3: 20, unit: '개', how: '가족 한줄 톡'
+    }
+  ];
+  var DEX_STAGE_NAME = ['아기', '성장', '완전체'];
+
+  function fedDays() {
+    var n = 0;
+    Object.keys(state.days || {}).forEach(function (k) {
+      var d = state.days[k];
+      if (d && d.geo && d.geo.feed === true) n++;
+    });
+    return n;
+  }
+
+  function dexValue(e) {
+    if (e.metric === 'earned') return (state.coins && state.coins.earned) ? (state.coins.earned[e.who] || 0) : 0;
+    if (e.metric === 'fed') return fedDays();
+    if (e.metric === 'exchanges') return state.shop.history.length;
+    if (e.metric === 'stamps') return state.stamps.length;
+    if (e.metric === 'chat') return state.chat.length;
+    return 0;
+  }
+
+  function dexStage(e) {
+    var v = dexValue(e);
+    if (v >= e.step3) return 3;
+    if (v >= e.step) return 2;
+    return 1;
+  }
+
+  /* 네잎 별 모양 (반짝이) */
+  function dexStar(x, y, r, fill) {
+    var q = r * 0.3;
+    return '<path d="M' + x + ' ' + (y - r) + ' L' + (x + q) + ' ' + (y - q) + ' L' + (x + r) + ' ' + y +
+      ' L' + (x + q) + ' ' + (y + q) + ' L' + x + ' ' + (y + r) + ' L' + (x - q) + ' ' + (y + q) +
+      ' L' + (x - r) + ' ' + y + ' L' + (x - q) + ' ' + (y - q) + ' Z" fill="' + fill + '"/>';
+  }
+
+  function dexEars(e, ink) {
+    var b = e.body, a = e.accent;
+    if (e.ear === 'bolt') {
+      return '<path d="M45 34 L35 6 L56 23 Z" fill="' + b + '" ' + ink + '/>' +
+        '<path d="M75 34 L85 6 L64 23 Z" fill="' + b + '" ' + ink + '/>' +
+        '<path d="M41 25 L37 12 L47 21 Z" fill="' + a + '"/>' +
+        '<path d="M79 25 L83 12 L73 21 Z" fill="' + a + '"/>';
+    }
+    if (e.ear === 'drop') {
+      return '<path d="M46 30 q14 -20 28 0 q-14 8 -28 0" fill="' + b + '" ' + ink + '/>' +
+        '<path d="M54 25 q6 -9 12 0 q-6 4 -12 0" fill="' + a + '" opacity=".8"/>';
+    }
+    if (e.ear === 'leaf') {
+      return '<path d="M58 30 q-4 -18 -18 -20 q1 19 18 20" fill="' + a + '" ' + ink + '/>' +
+        '<path d="M62 30 q4 -18 18 -20 q-1 19 -18 20" fill="' + a + '" ' + ink + '/>';
+    }
+    if (e.ear === 'flame') {
+      return '<path d="M60 6 c-9 7 -7 18 1 23 c5 -8 3 -13 -1 -23" fill="' + a + '" ' + ink + '/>' +
+        '<path d="M60 14 c-4 4 -3 9 0 12 c2 -4 2 -7 0 -12" fill="#FFF1C6"/>';
+    }
+    if (e.ear === 'talk') {
+      return '<circle cx="40" cy="30" r="9" fill="' + b + '" ' + ink + '/>' +
+        '<circle cx="80" cy="30" r="9" fill="' + b + '" ' + ink + '/>' +
+        '<circle cx="40" cy="30" r="4" fill="' + a + '"/>' +
+        '<circle cx="80" cy="30" r="4" fill="' + a + '"/>';
+    }
+    return '<line x1="60" y1="30" x2="60" y2="14" stroke="' + e.ink + '" stroke-width="2.6" stroke-linecap="round"/>' +
+      dexStar(60, 10, 7, a);
+  }
+
+  /* 몬스터 그림 — 종류·단계마다 모양이 바뀌는 오리지널 SVG */
+  function dexArt(e, stage) {
+    var b = e.body, a = e.accent, k = e.ink;
+    var ink = 'stroke="' + k + '" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"';
+    var label = (stage === 1 ? e.name + '의 알' : e.names[stage - 1]) + ' 그림';
+    var o = '<svg viewBox="0 0 120 120" width="100%" height="100%" role="img" aria-label="' + label + '">';
+
+    o += '<ellipse cx="60" cy="106" rx="30" ry="6" fill="#000" opacity=".07"/>';
+
+    if (stage === 1) {
+      o += '<ellipse cx="60" cy="64" rx="29" ry="35" fill="' + b + '" ' + ink + '/>' +
+        '<ellipse cx="49" cy="47" rx="7" ry="10" fill="#fff" opacity=".55"/>' +
+        '<circle cx="72" cy="55" r="6.5" fill="' + a + '"/>' +
+        '<circle cx="57" cy="77" r="5" fill="' + a + '"/>' +
+        '<circle cx="77" cy="82" r="3.5" fill="' + a + '"/>' +
+        '<path d="M68 36 L59 48 L69 56 L59 67 L67 77" fill="none" stroke="' + k + '" stroke-width="2" opacity=".28" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<path d="M60 34 q6 5 0 10" fill="none" stroke="#fff" stroke-width="2.4" opacity=".6" stroke-linecap="round"/>';
+      o += '</svg>';
+      return o;
+    }
+
+    var big = stage === 3;
+    var hr = big ? 27 : 25, hy = big ? 50 : 52;
+    var by = big ? 84 : 83, brx = big ? 28 : 25, bry = big ? 19 : 17;
+
+    if (big) {
+      o += '<circle cx="60" cy="60" r="53" fill="' + a + '" opacity=".15"/>' +
+        '<circle cx="60" cy="60" r="44" fill="' + a + '" opacity=".12"/>' +
+        '<path d="M33 77 q-18 -5 -23 -19 q17 0 25 11 z" fill="' + a + '" opacity=".92" ' + ink + '/>' +
+        '<path d="M87 77 q18 -5 23 -19 q-17 0 -25 11 z" fill="' + a + '" opacity=".92" ' + ink + '/>';
+    }
+
+    o += dexEars(e, ink);
+    o += '<path d="M' + (60 + brx - 1) + ' ' + (by + 7) + ' q19 2 15 -17 q-2 10 -13 8" fill="' + a + '" ' + ink + '/>';
+    o += '<ellipse cx="60" cy="' + by + '" rx="' + brx + '" ry="' + bry + '" fill="' + b + '" ' + ink + '/>';
+    o += '<ellipse cx="60" cy="' + (by + 3) + '" rx="' + (brx * 0.54) + '" ry="' + (bry * 0.6) + '" fill="#FFFDF7" opacity=".85"/>';
+    o += '<ellipse cx="' + (60 - brx + 1) + '" cy="' + (by - 2) + '" rx="7" ry="9" fill="' + b + '" ' + ink + '/>';
+    o += '<ellipse cx="' + (60 + brx - 1) + '" cy="' + (by - 2) + '" rx="7" ry="9" fill="' + b + '" ' + ink + '/>';
+    o += '<ellipse cx="47" cy="' + (by + bry - 1) + '" rx="9" ry="6" fill="' + b + '" ' + ink + '/>';
+    o += '<ellipse cx="73" cy="' + (by + bry - 1) + '" rx="9" ry="6" fill="' + b + '" ' + ink + '/>';
+    o += '<circle cx="60" cy="' + hy + '" r="' + hr + '" fill="' + b + '" ' + ink + '/>';
+    o += '<ellipse cx="51" cy="' + (hy + 2) + '" rx="5.4" ry="6.6" fill="#fff"/>' +
+      '<ellipse cx="69" cy="' + (hy + 2) + '" rx="5.4" ry="6.6" fill="#fff"/>' +
+      '<circle cx="52" cy="' + (hy + 3) + '" r="2.9" fill="#4A3A32"/>' +
+      '<circle cx="68" cy="' + (hy + 3) + '" r="2.9" fill="#4A3A32"/>' +
+      '<circle cx="53" cy="' + (hy + 1.4) + '" r="1" fill="#fff"/>' +
+      '<circle cx="69" cy="' + (hy + 1.4) + '" r="1" fill="#fff"/>';
+    o += '<ellipse cx="42" cy="' + (hy + 10) + '" rx="5" ry="3.2" fill="' + a + '" opacity=".75"/>' +
+      '<ellipse cx="78" cy="' + (hy + 10) + '" rx="5" ry="3.2" fill="' + a + '" opacity=".75"/>' +
+      '<path d="M56 ' + (hy + 10) + ' q4 4.6 8 0" fill="none" stroke="#4A3A32" stroke-width="2" stroke-linecap="round"/>';
+
+    if (big) {
+      o += '<path d="M45 ' + (hy - hr + 3) + ' L51 ' + (hy - hr - 13) + ' L60 ' + (hy - hr + 1) +
+        ' L69 ' + (hy - hr - 13) + ' L75 ' + (hy - hr + 3) + ' Z" fill="#FFE08A" ' + ink + '/>' +
+        '<circle cx="60" cy="' + (hy - hr - 7) + '" r="3" fill="' + a + '"/>' +
+        dexStar(24, 40, 6, a) + dexStar(97, 52, 5, a) + dexStar(90, 24, 4, '#FFF0B8');
+    } else {
+      o += dexStar(20, 46, 3.4, a);
+    }
+
+    o += '</svg>';
+    return o;
+  }
+
+  function renderDex() {
+    var grid = $('#dexGrid');
+    if (!grid) return;
+    clear(grid);
+    var found = 0, finals = 0;
+
+    DEX.forEach(function (e) {
+      var v = dexValue(e);
+      var stage = dexStage(e);
+      if (stage >= 2) found++;
+      if (stage >= 3) finals++;
+
+      var target = stage === 1 ? e.step : e.step3;
+      var meta = stage >= 3
+        ? '완전체 달성! 🎉 ' + e.how + ' ' + v + e.unit
+        : '다음 진화까지 ' + (target - v) + e.unit + ' · ' + e.how + ' ' + v + e.unit;
+      var shownName = stage === 1 ? e.name + '의 알' : e.names[stage - 1];
+
+      var artBox = h('div', { class: 'dex-art' });
+      artBox.innerHTML = dexArt(e, stage);
+
+      var gauge = h('div', { class: 'dex-gauge' }, [0, 1, 2].map(function (i) {
+        return h('i', { class: i < stage ? 'on' : '' });
+      }));
+
+      grid.appendChild(h('div', {
+        class: 'dex-card st' + stage,
+        style: { '--da': e.accent }
+      }, [
+        h('div', { class: 'dex-top' }, [
+          h('span', { class: 'dex-no', text: e.no }),
+          h('span', { class: 'ball', title: e.type + ' 타입', 'aria-label': e.type + ' 타입' }, [h('b')]),
+          h('span', { class: 'dex-tag', text: e.tag })
+        ]),
+        artBox,
+        h('div', { class: 'dex-name', text: shownName }),
+        h('div', { class: 'dex-type', text: e.icon + ' ' + e.type + ' 타입 · ' + stage + '단계 ' + DEX_STAGE_NAME[stage - 1] }),
+        gauge,
+        h('div', { class: 'dex-meta', text: meta })
+      ]));
+    });
+
+    var cnt = $('#dexCount');
+    if (cnt) cnt.textContent = '발견 ' + found + '/' + DEX.length + ' · 완전체 ' + finals + '마리';
+  }
+
   /* ═══════════ 하이파이브 ═══════════ */
   function isKidDone(kidId) {
     var list = tasksFor(kidId, todayKey());
@@ -3476,6 +3789,7 @@ window.__ART__ = {
     if (state.stamps.length > 200) state.stamps = state.stamps.slice(-200);
     save(true);
     renderMission();
+    renderDex();
     stampFx();
     toast('도장 쿵! 💮 ' + text);
   }
@@ -4015,6 +4329,7 @@ window.__ART__ = {
     KID_ORDER.forEach(function (kid) { renderKid(kid); });
     renderAllowance();
     renderShop();
+    renderDex();
     renderMission();
     renderChat();
     renderClass();
@@ -4285,6 +4600,7 @@ window.__ART__ = {
       state.stamps = state.stamps.filter(function (s) { return s.id !== id; });
       save(true);
       renderMission();
+      renderDex();
       toast('도장을 하나 취소했어요');
     });
 
