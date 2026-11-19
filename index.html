@@ -4775,7 +4775,14 @@ window.__ART__ = {
     });
     box.addEventListener('click', function (ev) {
       var b = ev.target.closest ? ev.target.closest('[data-folder]') : null;
-      if (b) applyFolder(b.dataset.folder);
+      if (!b) return;
+      applyFolder(b.dataset.folder);
+      /* 고른 폴더 내용이 바로 보이도록 폴더 줄을 화면 맨 위로 올린다 */
+      var bar = document.getElementById('folderBar');
+      if (!bar) return;
+      var top = bar.getBoundingClientRect().top + (window.scrollY || window.pageYOffset || 0);
+      try { window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' }); }
+      catch (e) { window.scrollTo(0, Math.max(0, top)); }
     });
   }
 
