@@ -15,6 +15,16 @@
 - 숙제 없는 날 값은 `state.days["YYYY-MM-DD"].noHomework.dayun = true` 로 저장되어 가족 모든 기기에 실시간으로 함께 보입니다.
 - 금요일 받아쓰기 점수: 은우 카드 안 `📝 금요일 받아쓰기 점수` 칸에 0~100점을 저장합니다. 주 단위로 저장되어(`state.dictation.scores["YYYY-MM-DD(금)"] = 점수`) 최근 기록 칩을 눌러 지난 주 점수도 고칠 수 있고, 금요일 당일에는 `오늘 받아쓰기 날!` 뱃지가 뜨고, 다른 기기에도 실시간으로 공유됩니다.
 
+## 코인 지갑 · 먹거리 보상 상점 (2026-11-19 추가)
+
+- 은우·다윤이 각각 `🪙 코인` 잔액을 가집니다. 아이 카드 머리 아래 코인 줄에서 `−1 / +1 / +5`로 바로 조절합니다.
+- `🎁 먹거리 보상 상점` 섹션에서도 지갑을 고르고 `−1 / +1 / +5`, `직접 조절(넣기/빼기)`을 쓸 수 있습니다.
+- **자동 적립은 없습니다.** 루틴 체크·미션으로는 코인이 쌓이지 않고, 부모가 직접 줄 때만 늘어납니다.
+- 기본 보상: 🍦 아이스크림/편의점 간식 5 · 🍡 탕후루/떡볶이 10 · 🍲 마라탕 20 · 🍗 치킨 25 · 🍕 피자 30 코인.
+- `교환하기` → 지갑을 고른 뒤 누르면 코인이 차감되고 `교환 내역`에 누가·언제·무엇을·몇 코인인지 남습니다. `전달 완료` 체크와 삭제가 됩니다.
+- `⚙️ 보상 메뉴 관리`에서 보상 추가(이름+코인)·코인 수 수정·삭제가 됩니다.
+- 저장 위치: `state.coins`(잔액·조절 기록), `state.shop`(메뉴·교환 내역). 예전 기록에 이 값이 없으면 기본값으로 조용히 채워집니다.
+
 ## 실시간 동기화
 
 - 엄마·아빠·은우·다윤 폰이 같은 기록을 함께 봅니다. 한 기기에서 체크하면 다른 기기에 몇 초 안에 나타납니다.
@@ -34,5 +44,5 @@ bash tmp/deploy_sync.sh   # 빌드 → index.html(robots noindex) → git push
 ```
 
 - 빌드 원본: `tmp/template.html`(화면) + `tmp/app.js`(동작) → `python3 tmp/build.py 우리가족_대시보드.html`
-- 검증: `python3 tmp/sync_e2e.py [URL]` (두 기기 실시간 동기화 E2E), `python3 tmp/sync_offline.py` (오프라인 복귀), `sh tmp/pw.sh tmp/test_eunwoo.py` (은우 숙제 요일·받아쓰기 점수, 모의 Firebase로 실제 DB는 건드리지 않음), `sh tmp/pw.sh tmp/check_live.py` (라이브 확인, 읽기만)
+- 검증: `sh tmp/pw.sh tmp/shop_e2e.py` (코인·상점 E2E, 모의 Firebase로 실제 DB는 건드리지 않음), `sh tmp/pw.sh tmp/check_live_shop.py` (라이브 화면 확인, 읽기만), `python3 tmp/sync_e2e.py [URL]` (두 기기 실시간 동기화 E2E), `python3 tmp/sync_offline.py` (오프라인 복귀), `sh tmp/pw.sh tmp/test_eunwoo.py` (은우 숙제 요일·받아쓰기 점수, 모의 Firebase로 실제 DB는 건드리지 않음), `sh tmp/pw.sh tmp/check_live.py` (라이브 확인, 읽기만)
 - 초기 상태로 되돌리기: `python3 tmp/reset_and_shot.py`
