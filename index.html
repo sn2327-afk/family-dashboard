@@ -523,6 +523,43 @@
   }
   .task.done .box{background:var(--k);border-color:var(--k);}
   .task.done .txt{color:var(--kink);}
+
+  /* ───────── 👕 빨래 개기 (아이들이 직접 누르는 하루 1회 미션) ───────── */
+  .laundry-box{margin:10px 0 9px;}
+  .laundry{
+    display:flex;align-items:center;gap:9px;width:100%;
+    min-height:60px;padding:9px 11px;
+    border:2px dashed #E4D8F7;border-radius:19px;background:#FCFAFF;
+    font:inherit;color:#7A6895;text-align:left;cursor:pointer;
+    transition:background .18s,border-color .18s,box-shadow .18s,transform .1s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .laundry:active{transform:scale(.985);}
+  .laundry .em{font-size:22px;flex:0 0 auto;line-height:1;}
+  .laundry .txt{flex:1 1 auto;line-height:1.35;font-size:14.5px;font-weight:800;letter-spacing:-.3px;}
+  .laundry .txt .note{display:block;margin-top:2px;font-size:11.5px;font-weight:800;color:#A99BC6;}
+  .laundry .gain{
+    flex:0 0 auto;white-space:nowrap;font-size:10.5px;font-weight:900;letter-spacing:-.2px;
+    color:#7A5BB0;background:#F0E8FF;border-radius:999px;padding:5px 9px;
+  }
+  .laundry .box{
+    width:27px;height:27px;border-radius:9px;flex:0 0 auto;
+    border:2px solid #E2D6F3;background:#fff;color:#fff;
+    display:grid;place-items:center;font-size:14px;font-weight:900;
+  }
+  .laundry.done{
+    border:2px solid #D6C2F4;background:linear-gradient(160deg,#F5EFFF,#FFF1F8);color:#6B4E9E;
+    box-shadow:0 3px 10px rgba(186,166,236,.22);
+  }
+  .laundry.done .note{color:#9A7FC9;}
+  .laundry.done .gain{background:#E7DBFF;color:#6B4E9E;}
+  .laundry.done .box{background:#B79BE6;border-color:#B79BE6;}
+  @media (max-width:359px){
+    .laundry .gain{display:none;}
+    .laundry .txt{font-size:13.5px;}
+    .laundry .em{font-size:20px;}
+    .laundry{padding:8px 10px;gap:8px;}
+  }
   .del{
     flex:0 0 auto;width:38px;height:38px;border-radius:50%;
     border:none;background:#FBF1EC;color:#C09A88;
@@ -1850,6 +1887,14 @@ window.__ART__ = {
   };
   function coinName(kid) { return COIN_META[kid] ? COIN_META[kid].name : '가족'; }
   function coinEmoji(kid) { return COIN_META[kid] ? COIN_META[kid].emoji : '🙂'; }
+
+  /* 👕 빨래 개기 — 은우·다윤이 직접 누르는 하루 1번 코인 미션
+     · 엄마 모드(0203)가 잠겨 있어도 아이들이 누를 수 있다
+     · 하루에 딱 1개만 적립되고, 다시 누르면 그 1개만 회수된다 (무한 적립 없음)
+     · 소민(아빠)은 빨래 개기 대상이 아니다 */
+  var LAUNDRY_KIDS = ['eunwoo', 'dayun'];
+  var LAUNDRY_COIN = 1;
+  var LAUNDRY_TITLE = '빨래 개기 (+1코인)';
   var COIN_MAX = 9999999;
   var SHOP_ITEM_MAX = 9999;
   var SHOP_DEFAULT = [
@@ -2003,13 +2048,28 @@ window.__ART__ = {
       var day = s.days[k];
       if (!day || typeof day !== 'object' || Array.isArray(day)) return;
       var nh = day.noHomework;
-      if (!nh || typeof nh !== 'object' || Array.isArray(nh)) { delete day.noHomework; return; }
-      var clean = {};
-      Object.keys(nh).forEach(function (kidId) {
-        if (KIDS[kidId] && nh[kidId]) clean[kidId] = true;
-      });
-      if (Object.keys(clean).length) day.noHomework = clean;
-      else delete day.noHomework;
+      if (!nh || typeof nh !== 'object' || Array.isArray(nh)) {
+        delete day.noHomework;
+      } else {
+        var clean = {};
+        Object.keys(nh).forEach(function (kidId) {
+          if (KIDS[kidId] && nh[kidId]) clean[kidId] = true;
+        });
+        if (Object.keys(clean).length) day.noHomework = clean;
+        else delete day.noHomework;
+      }
+      /* 빨래 개기 체크 — 은우·다윤만, 코인 기록 id만 남긴다 */
+      var lu = day.laundry;
+      if (!lu || typeof lu !== 'object' || Array.isArray(lu)) {
+        delete day.laundry;
+      } else {
+        var cleanLu = {};
+        LAUNDRY_KIDS.forEach(function (kidId) {
+          if (typeof lu[kidId] === 'string' && lu[kidId]) cleanLu[kidId] = lu[kidId];
+        });
+        if (Object.keys(cleanLu).length) day.laundry = cleanLu;
+        else delete day.laundry;
+      }
     });
     s.shopping = cleanItems(s.shopping);
     s.wishlist = cleanItems(s.wishlist);
@@ -2256,7 +2316,7 @@ window.__ART__ = {
   function dayRead(key) {
     var d = state.days[key];
     if (!d || typeof d !== 'object') {
-      return { geo: {}, kids: { eunwoo: {}, dayun: {} }, pay: { eunwoo: {}, dayun: {} }, mission: null };
+      return { geo: {}, kids: { eunwoo: {}, dayun: {} }, pay: { eunwoo: {}, dayun: {} }, laundry: {}, mission: null };
     }
     return {
       geo: (d.geo && typeof d.geo === 'object') ? d.geo : {},
@@ -2268,6 +2328,8 @@ window.__ART__ = {
         eunwoo: (d.pay && d.pay.eunwoo && typeof d.pay.eunwoo === 'object') ? d.pay.eunwoo : {},
         dayun: (d.pay && d.pay.dayun && typeof d.pay.dayun === 'object') ? d.pay.dayun : {}
       },
+      /* 빨래 개기 — { eunwoo: '코인기록id', dayun: '코인기록id' } */
+      laundry: (d.laundry && typeof d.laundry === 'object' && !Array.isArray(d.laundry)) ? d.laundry : {},
       mission: (d.mission && typeof d.mission === 'object' && typeof d.mission.text === 'string') ? d.mission : null
     };
   }
@@ -2284,6 +2346,7 @@ window.__ART__ = {
     if (!d.pay || typeof d.pay !== 'object') d.pay = {};
     if (!d.pay.eunwoo || typeof d.pay.eunwoo !== 'object') d.pay.eunwoo = {};
     if (!d.pay.dayun || typeof d.pay.dayun !== 'object') d.pay.dayun = {};
+    if (!d.laundry || typeof d.laundry !== 'object' || Array.isArray(d.laundry)) d.laundry = {};
     return d;
   }
 
@@ -2652,6 +2715,17 @@ window.__ART__ = {
 
     var listBox = h('div', { class: 'checks', id: 'tasks-' + kidId });
 
+    /* 👕 빨래 개기 — 은우·다윤만. 엄마 모드 잠금과 상관없이 아이가 직접 누를 수 있다 */
+    var laundryBox = null;
+    if (LAUNDRY_KIDS.indexOf(kidId) !== -1) {
+      laundryBox = h('div', { class: 'laundry-box', id: 'laundry-' + kidId });
+      laundryBox.addEventListener('click', function (ev) {
+        var b = ev.target.closest ? ev.target.closest('[data-laundry]') : null;
+        if (!b) return;
+        toggleLaundry(b.dataset.laundry);
+      });
+    }
+
     var input = h('input', {
       type: 'text',
       id: 'add-' + kidId,
@@ -2669,6 +2743,7 @@ window.__ART__ = {
 
     sec.appendChild(head);
     sec.appendChild(coinBar);
+    if (laundryBox) sec.appendChild(laundryBox);
     sec.appendChild(listBox);
     sec.appendChild(form);
     if (dictBox) sec.appendChild(dictBox);
@@ -2817,6 +2892,7 @@ window.__ART__ = {
     }
 
     renderWeek(kidId);
+    renderLaundry(kidId);
     if (kidId === DICTATION_KID) renderDictation();
     var balEl = $('#balAmt-' + kidId);
     if (balEl) balEl.textContent = won(state.allowance.balances[kidId] || 0);
@@ -3493,6 +3569,84 @@ window.__ART__ = {
     toast(coinName(kid) + ' 코인 ' + (delta > 0 ? '+' : '') + delta + ' → ' + next + '개');
   }
 
+  /* ═══════════ 👕 빨래 개기 — 아이들이 직접 누르는 하루 1번 코인 미션 ═══════════ */
+  function laundryLogId(kid, key) {
+    if (LAUNDRY_KIDS.indexOf(kid) === -1) return '';
+    var d = state.days[key || todayKey()];
+    if (!d || !d.laundry || typeof d.laundry !== 'object') return '';
+    var id = d.laundry[kid];
+    return (typeof id === 'string') ? id : '';
+  }
+
+  function laundryOn(kid, key) { return !!laundryLogId(kid, key); }
+
+  /* 체크하면 코인 +1 · 해제하면 그날 받은 1개만 회수 (하루 1회, 무한 적립 없음) */
+  function toggleLaundry(kid) {
+    if (LAUNDRY_KIDS.indexOf(kid) === -1) return;
+    var key = todayKey();
+    var d = dayWrite(key);
+
+    if (laundryOn(kid, key)) {
+      var logId = laundryLogId(kid, key);
+      var cur = coinBal(kid);
+      var left = Math.max(0, cur - LAUNDRY_COIN);
+      state.coins.balances[kid] = left;
+      /* 누적 획득도 같이 되돌린다 (도감 진화가 잔액보다 앞서지 않게) */
+      state.coins.earned[kid] = Math.max(left, (state.coins.earned[kid] || 0) - LAUNDRY_COIN);
+      state.coins.log = state.coins.log.filter(function (x) { return x.id !== logId; });
+      delete d.laundry[kid];
+      if (!Object.keys(d.laundry).length) delete d.laundry;
+      save(true);
+      renderKid(kid);
+      renderShop();
+      renderDex();
+      toast(coinName(kid) + ' 빨래 개기 취소 · 코인 -' + LAUNDRY_COIN + ' (지금 ' + left + '개)');
+      return;
+    }
+
+    var bal = coinBal(kid);
+    if (bal + LAUNDRY_COIN > COIN_MAX) { toast(coinName(kid) + ' 코인이 이미 가득 찼어요'); return; }
+    var id = 'cl' + Date.now().toString(36) + Math.random().toString(36).slice(2, 4);
+    state.coins.balances[kid] = bal + LAUNDRY_COIN;
+    state.coins.earned[kid] = Math.min(COIN_MAX, (state.coins.earned[kid] || 0) + LAUNDRY_COIN);
+    state.coins.log.unshift({
+      id: id,
+      kid: kid,
+      amount: LAUNDRY_COIN,
+      at: new Date().toISOString(),
+      label: '빨래 개기 (+1)'
+    });
+    if (state.coins.log.length > 60) state.coins.log.length = 60;
+    d.laundry[kid] = id;
+    save(true);
+    renderKid(kid);
+    renderShop();
+    renderDex();
+    toast(coinName(kid) + ' 빨래 개기 완료! 코인 +' + LAUNDRY_COIN + ' (지금 ' + state.coins.balances[kid] + '개)');
+  }
+
+  function renderLaundry(kid) {
+    var box = $('#laundry-' + kid);
+    if (!box) return;
+    clear(box);
+    var on = laundryOn(kid, todayKey());
+    box.appendChild(h('button', {
+      class: 'laundry' + (on ? ' done' : ''),
+      type: 'button',
+      dataset: { laundry: kid },
+      'aria-pressed': on ? 'true' : 'false',
+      'aria-label': KIDS[kid].name + ' 빨래 개기 ' + (on ? '완료 · 다시 누르면 취소되고 코인 1개를 돌려놀아요' : '표시하고 코인 1개 받기')
+    }, [
+      h('span', { class: 'em', text: '👕' }),
+      h('span', { class: 'txt' }, [
+        document.createTextNode(LAUNDRY_TITLE),
+        h('span', { class: 'note', text: on ? '오늘 완료 · 누르면 취소' : '하루 한 번 · 누르면 취소' })
+      ]),
+      h('span', { class: 'gain', text: on ? '+1 받음' : '+1코인' }),
+      h('span', { class: 'box', text: on ? '✓' : '' })
+    ]));
+  }
+
   function addShopItem() {
     if (!momOpen) { openLockVeil('unlock'); return; }
     var nameEl = $('#shopNewLabel');
@@ -3795,7 +3949,7 @@ window.__ART__ = {
         h('span', { class: 'mlb-ic', text: '🔒' }),
         h('div', { class: 'mlb-tx' }, [
           h('b', { text: '코인은 엄마만 조절해요' }),
-          h('small', { text: '아이들은 코인 확인·먹거리 교환만 할 수 있어요' })
+          h('small', { text: '아이들은 빨래 개기·코인 확인·먹거리 교환만 할 수 있어요' })
         ])
       ]));
       bar.appendChild(h('div', { class: 'mlb-acts' }, [
