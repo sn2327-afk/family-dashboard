@@ -683,6 +683,21 @@
   }
   .dict-his li b{font-family:var(--hand);font-size:13px;font-weight:400;color:#6A55A8;}
   .dict-his li.on{border-color:#C6B5F0;background:#F6F1FE;box-shadow:0 1px 0 rgba(198,181,240,.5);}
+  /* 💯 받아쓰기 100점 → +1코인 안내 배지 */
+  .dict-reward{
+    display:flex;align-items:center;gap:5px;margin:9px 0 0;
+    font-size:11px;font-weight:900;letter-spacing:-.2px;line-height:1.35;
+    color:#8A6BB8;background:#F4EDFF;
+    border:1.5px dashed #DCCDF5;border-radius:12px;padding:6px 9px;
+  }
+  .dict-reward .em{flex:0 0 auto;font-size:14px;line-height:1;}
+  .dict-reward .tx{flex:1 1 auto;min-width:0;}
+  .dict-reward .dcoin{flex:0 0 auto;font-weight:900;color:#9A7FC9;}
+  .dict-reward.on{
+    color:#7A4F12;background:linear-gradient(135deg,#FFF4CE,#FFE9FA);
+    border-style:solid;border-color:#EFD9A8;
+  }
+  .dict-reward.on .dcoin{color:#8A5A17;}
   .dict-empty{margin:9px 0 0;font-size:11px;font-weight:700;color:#AFA3C7;}
   .dict-hint{margin:8px 0 0;font-size:10.5px;font-weight:700;color:#B4A8CC;}
 
@@ -1876,6 +1891,10 @@ window.__ART__ = {
   /* 요일이 정해진 할 일 (0=일 … 6=토) — 은우 숙제는 화·금요일만 */
   var TASK_DAYS = { 'eunwoo-homework': [2, 5] };
   var DICTATION_KID = 'eunwoo';     // 금요일 받아쓰기 점수는 은우만
+  /* 💯 받아쓰기 100점 → 그 주(금요일 날짜 키) 1코인 자동 적립 · 엄마 잠금과 무관하게 아이가 저장한다 */
+  var DICT_REWARD_SCORE = 100;
+  var DICT_REWARD_COIN = 1;
+  var DICT_REWARD_LABEL = '받아쓰기 100점 (+1)';
 
   /* 코인 지갑 · 먹거리 보상 상점 — 자동 적립은 없고 부모가 직접 조절한다 */
   var COIN_KIDS = ['eunwoo', 'dayun', 'somin'];
@@ -1974,7 +1993,7 @@ window.__ART__ = {
       wishlist: [],
       weekplan: [],
       dinner: { date: '', text: '' },
-      dictation: { scores: {} },
+      dictation: { scores: {}, rewarded: {} },
       tab: 'shopping',
       allowance: {
         perCheck: ALLOW_DEFAULT,
@@ -2089,7 +2108,7 @@ window.__ART__ = {
     if (typeof s.dinner.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(s.dinner.date)) s.dinner.date = '';
     if (!s.dinner.text) s.dinner.date = '';
 
-    /* 금요일 받아쓰기 점수 — { scores: { 'YYYY-MM-DD(금)': 0~100 } } */
+    /* 금요일 받아쓰기 점수 — { scores: { 'YYYY-MM-DD(금)': 0~100 }, rewarded: { 'YYYY-MM-DD': 코인기록id } } */
     var rawDict = (raw.dictation && typeof raw.dictation === 'object' && !Array.isArray(raw.dictation)) ? raw.dictation : {};
     var rawScores = (rawDict.scores && typeof rawDict.scores === 'object' && !Array.isArray(rawDict.scores)) ? rawDict.scores : {};
     var cleanScores = {};
@@ -2099,7 +2118,15 @@ window.__ART__ = {
       if (!isFinite(n)) return;
       cleanScores[k] = Math.min(100, Math.max(0, n));
     });
-    s.dictation = { scores: cleanScores };
+    /* 100점 코인을 받은 주 — 금요일 날짜 키별로 코인 기록 id 하나만 남긴다 (회수 시 그 기록만 지운다) */
+    var rawRewarded = (rawDict.rewarded && typeof rawDict.rewarded === 'object' && !Array.isArray(rawDict.rewarded)) ? rawDict.rewarded : {};
+    var cleanRewarded = {};
+    Object.keys(rawRewarded).forEach(function (k) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(k)) return;
+      if (typeof rawRewarded[k] !== 'string' || !rawRewarded[k]) return;
+      cleanRewarded[k] = rawRewarded[k];
+    });
+    s.dictation = { scores: cleanScores, rewarded: cleanRewarded };
     if (LIST_TABS.indexOf(s.tab) === -1) s.tab = 'shopping';
 
     s.allowance = Object.assign(
@@ -3021,16 +3048,69 @@ window.__ART__ = {
     return offset < 0 ? (-offset) + '주 전' : offset + '주 후';
   }
 
+  function dictRewardLogId(key) {
+    var r = state.dictation && state.dictation.rewarded;
+    if (!r || typeof r !== 'object') return '';
+    var id = r[key];
+    return (typeof id === 'string') ? id : '';
+  }
+
+  function dictRewarded(key) { return !!dictRewardLogId(key); }
+
+  /* 그 주(금요일 날짜 키) 100점 코인을 한 번만 적립한다 */
+  function grantDictReward(key) {
+    if (!state.dictation) return false;
+    if (!state.dictation.rewarded || typeof state.dictation.rewarded !== 'object') state.dictation.rewarded = {};
+    if (dictRewarded(key)) return false;                 // 이미 이 주에 받았으면 더 올리지 않는다
+    var kid = DICTATION_KID;
+    var bal = coinBal(kid);
+    if (bal + DICT_REWARD_COIN > COIN_MAX) return false;
+    var id = 'cd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 4);
+    state.coins.balances[kid] = bal + DICT_REWARD_COIN;
+    /* 누적 획득도 같이 올린다 (도감 진화용) */
+    state.coins.earned[kid] = Math.min(COIN_MAX, (state.coins.earned[kid] || 0) + DICT_REWARD_COIN);
+    state.coins.log.unshift({
+      id: id,
+      kid: kid,
+      amount: DICT_REWARD_COIN,
+      at: new Date().toISOString(),
+      label: DICT_REWARD_LABEL
+    });
+    if (state.coins.log.length > 60) state.coins.log.length = 60;
+    state.dictation.rewarded[key] = id;
+    return true;
+  }
+
+  /* 그 주에 준 1코인과 그 기록만 회수한다 (잔액 0 미만·누적 아래로 내려가지 않게) */
+  function revokeDictReward(key) {
+    var logId = dictRewardLogId(key);
+    if (!logId) return false;
+    var kid = DICTATION_KID;
+    var left = Math.max(0, coinBal(kid) - DICT_REWARD_COIN);
+    state.coins.balances[kid] = left;
+    state.coins.earned[kid] = Math.max(left, (state.coins.earned[kid] || 0) - DICT_REWARD_COIN);
+    state.coins.log = state.coins.log.filter(function (x) { return x.id !== logId; });
+    delete state.dictation.rewarded[key];
+    return true;
+  }
+
   function saveDictScore(key) {
     var el = $('#dictInput');
     if (!el || !state.dictation) return;
+    if (!state.dictation.rewarded || typeof state.dictation.rewarded !== 'object') state.dictation.rewarded = {};
     var raw = String(el.value == null ? '' : el.value).trim();
     if (raw === '') {
       if (state.dictation.scores[key] !== undefined) {
         delete state.dictation.scores[key];
+        var tookOnDelete = revokeDictReward(key);
         save(true);
         renderDictation();
-        toast(mdLabel(key) + ' 받아쓰기 점수를 지웠어요');
+        renderKid(DICTATION_KID);
+        renderShop();
+        renderDex();
+        toast(tookOnDelete
+          ? mdLabel(key) + ' 받아쓰기 점수를 지우고 100점 코인 1개도 회수했어요'
+          : mdLabel(key) + ' 받아쓰기 점수를 지웠어요');
       } else {
         toast('받아쓰기 점수를 적어 주세요');
         el.focus();
@@ -3044,9 +3124,23 @@ window.__ART__ = {
       return;
     }
     state.dictation.scores[key] = n;
+    /* 100점이면 그 주 1코인 (이미 받았으면 그대로) · 100점이 아니게 고치면 받은 1코인 회수 */
+    var gave = false;
+    var tookBack = false;
+    if (n === DICT_REWARD_SCORE) gave = grantDictReward(key);
+    else tookBack = revokeDictReward(key);
     save(true);
     renderDictation();
-    toast('받아쓰기 ' + n + '점 저장 ✓ ' + mdLabel(key) + ' (금)');
+    renderKid(DICTATION_KID);
+    renderShop();
+    renderDex();
+    if (gave) {
+      toast('💯 받아쓰기 100점! ' + coinName(DICTATION_KID) + ' 코인 +' + DICT_REWARD_COIN + ' (지금 ' + coinBal(DICTATION_KID) + '개)');
+    } else if (tookBack) {
+      toast('받아쓰기 ' + n + '점 저장 ✓ 100점 코인 1개는 회수했어요');
+    } else {
+      toast('받아쓰기 ' + n + '점 저장 ✓ ' + mdLabel(key) + ' (금)');
+    }
   }
 
   function renderDictation() {
@@ -3116,6 +3210,23 @@ window.__ART__ = {
     });
     box.appendChild(h('form', { class: 'dict-form', autocomplete: 'off' }, [
       input, h('span', { class: 'dict-unit', text: '점' }), saveBtn
+    ]));
+
+    /* ── 💯 100점 +1코인 안내 / 받음 배지 ── */
+    var rewarded = dictRewarded(key);
+    box.appendChild(h('div', {
+      class: 'dict-reward' + (rewarded ? ' on' : ''),
+      id: 'dictReward',
+      dataset: { dictReward: rewarded ? '1' : '0' }
+    }, [
+      h('span', { class: 'em', text: '💯' }),
+      h('span', {
+        class: 'tx',
+        text: rewarded
+          ? '100점 +1코인 받음'
+          : (score === DICT_REWARD_SCORE ? '저장을 누르면 +1코인!' : '100점 맞으면 +1코인!')
+      }),
+      h('span', { class: 'dcoin', text: '🪙 ' + coinBal(DICTATION_KID) })
     ]));
 
     /* ── 최근 기록 ── */
