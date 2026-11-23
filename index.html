@@ -560,6 +560,73 @@
     .laundry .em{font-size:20px;}
     .laundry{padding:8px 10px;gap:8px;}
   }
+
+  /* ───────── 📚 주말 숙제 (토·일 통합) ───────── */
+  .wk{
+    margin-top:14px;padding:12px 12px 11px;
+    border-radius:20px;border:2px dashed #D9E6F6;
+    background:
+      radial-gradient(circle at 6% 0%, #FFF6DA 0%, rgba(255,246,218,0) 56%),
+      linear-gradient(160deg,#F2F9FF 0%,#F8F4FF 100%);
+  }
+  .wk.got{
+    border:2px solid #BFDCF5;
+    box-shadow:0 0 0 4px rgba(159,205,239,.16);
+  }
+  .wk-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+  .wk-head .wi{
+    width:34px;height:34px;flex:0 0 auto;border-radius:12px;
+    display:grid;place-items:center;font-size:17px;background:#fff;
+    box-shadow:0 2px 6px rgba(160,185,215,.18);
+  }
+  .wk-head h3{
+    margin:0;font-family:var(--hand);font-weight:400;
+    font-size:16px;letter-spacing:-.2px;color:#35688F;line-height:1.3;
+  }
+  .wk-head .dp{margin:1px 0 0;font-size:11px;font-weight:800;color:#8FA9C2;letter-spacing:-.1px;}
+  .wk-badge{
+    margin-left:auto;flex:0 0 auto;
+    font-size:10.5px;font-weight:900;letter-spacing:-.2px;
+    color:#5E7F9E;background:#E9F3FD;border-radius:999px;padding:5px 9px;white-space:nowrap;
+  }
+  .wk-badge.got{
+    color:#8A5A17;
+    background:linear-gradient(135deg,#FFEAA8,#FFD79B);
+    box-shadow:0 2px 0 rgba(240,205,134,.55);
+  }
+  .wk-rows{display:grid;gap:7px;margin-top:10px;}
+  .wk-row{
+    display:flex;align-items:center;gap:9px;width:100%;
+    min-height:54px;padding:8px 10px;
+    border:2px solid #E7EFF8;border-radius:17px;background:#FFFDFC;
+    font:inherit;color:#4D6B87;text-align:left;cursor:pointer;
+    font-size:14.5px;font-weight:800;letter-spacing:-.2px;
+    transition:background .18s,border-color .18s,transform .1s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .wk-row:active{transform:scale(.985);}
+  .wk-row .em{font-size:19px;flex:0 0 auto;line-height:1;}
+  .wk-row .txt{flex:1 1 auto;}
+  .wk-row .box{
+    width:27px;height:27px;border-radius:9px;flex:0 0 auto;
+    border:2px solid #DFE9F4;background:#fff;color:#fff;
+    display:grid;place-items:center;font-size:14px;font-weight:900;
+  }
+  .wk-row.done{
+    border:2px solid #BFDCF5;background:linear-gradient(160deg,#EFF8FF,#FFF9EC);color:#2C6A96;
+  }
+  .wk-row.done .box{background:#9FCDEF;border-color:#9FCDEF;}
+  .wk.wk-plain{padding:0;border:0;background:none;box-shadow:none;}
+  .wk-off{
+    margin:10px 0 0;padding:8px 11px;line-height:1.45;
+    font-size:11.5px;font-weight:800;color:#8FA9C2;
+    background:#F7FBFF;border:1.5px dashed #DCEBF8;border-radius:13px;
+  }
+  @media (max-width:359px){
+    .wk-badge{margin-left:0;font-size:9.5px;padding:4px 8px;}
+    .wk-head .dp{font-size:10px;}
+    .wk-row{font-size:13.5px;min-height:50px;}
+  }
   .del{
     flex:0 0 auto;width:38px;height:38px;border-radius:50%;
     border:none;background:#FBF1EC;color:#C09A88;
@@ -599,6 +666,20 @@
   .wd.today .l{color:var(--kink,#2D6D95);}
   .wd.future{opacity:.42;}
   .week-sub{margin:9px 0 0;font-size:12px;font-weight:700;color:#AE9C92;}
+
+  /* 🏆 다윤 일주일 완료 (+1코인) 뱃지 */
+  .week-reward{
+    display:flex;align-items:center;gap:7px;margin:9px 0 0;
+    padding:9px 11px;border-radius:14px;line-height:1.35;
+    font-size:11.5px;font-weight:900;letter-spacing:-.2px;
+    color:#A9738A;background:#FFF8FB;border:1.5px dashed #F3D7E2;
+  }
+  .week-reward.got{
+    color:#8A5A17;
+    background:linear-gradient(135deg,#FFF0C4,#FFE1B5);
+    border:1.5px solid #FFD9A6;
+    box-shadow:0 2px 0 rgba(240,205,134,.4);
+  }
 
   /* 요일이 정해진 할 일 안내 */
   .task-note{
@@ -1896,6 +1977,22 @@ window.__ART__ = {
   var DICT_REWARD_COIN = 1;
   var DICT_REWARD_LABEL = '받아쓰기 100점 (+1)';
 
+  /* 📚 은우 주말 숙제 (토·일 통합) — 독서록·일기 둘 다 하면 +1코인, 그 주말(토요일 키)에 1번
+     · 토요일에 체크한 상태가 일요일에 그대로 이어진다 (같은 토요일 키에 저장)
+     · 엄마 모드(0203) 잠금과 상관없이 은우가 직접 체크한다 */
+  var WEEKEND_KID = 'eunwoo';
+  var WEEKEND_ITEMS = [
+    { key: 'book', emoji: '📖', label: '독서록' },
+    { key: 'diary', emoji: '✏️', label: '일기' }
+  ];
+  var WEEKEND_COIN = 1;
+  var WEEKEND_LABEL = '주말 숙제 완료 (+1)';
+
+  /* 🏆 다윤 일주일 완료 — 이번 주(월~일) 과제·인강을 모두 채우면 +1코인, 그 주(월요일 키)에 1번 */
+  var WEEK_REWARD_KID = 'dayun';
+  var WEEK_REWARD_COIN = 1;
+  var WEEK_REWARD_LABEL = '다윤 일주일 완료 (+1)';
+
   /* 코인 지갑 · 먹거리 보상 상점 — 자동 적립은 없고 부모가 직접 조절한다 */
   var COIN_KIDS = ['eunwoo', 'dayun', 'somin'];
   /* 소민은 아이 루틴이 없고 코인 지갑·도감만 쓴다 */
@@ -1994,6 +2091,10 @@ window.__ART__ = {
       weekplan: [],
       dinner: { date: '', text: '' },
       dictation: { scores: {}, rewarded: {} },
+      /* 📚 은우 주말 숙제 — { '토요일 YYYY-MM-DD': { book: true|false, diary: true|false, rewardId: '코인기록id'|null } } */
+      weekendHomework: {},
+      /* 🏆 다윤 일주일 완료 코인을 받은 주 — { '월요일 YYYY-MM-DD': '코인기록id' } */
+      dayunWeekRewarded: {},
       tab: 'shopping',
       allowance: {
         perCheck: ALLOW_DEFAULT,
@@ -2127,6 +2228,34 @@ window.__ART__ = {
       cleanRewarded[k] = rawRewarded[k];
     });
     s.dictation = { scores: cleanScores, rewarded: cleanRewarded };
+
+    /* 📚 은우 주말 숙제 — 토요일 날짜 키만, { book, diary, rewardId } 로 정리한다 */
+    var rawWk = (raw.weekendHomework && typeof raw.weekendHomework === 'object' && !Array.isArray(raw.weekendHomework)) ? raw.weekendHomework : {};
+    var cleanWk = {};
+    Object.keys(rawWk).forEach(function (k) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(k)) return;
+      if (parseYmd(k).getDay() !== 6) return;                 // 토요일 키만 인정
+      var rec = rawWk[k];
+      if (!rec || typeof rec !== 'object' || Array.isArray(rec)) return;
+      cleanWk[k] = {
+        book: !!rec.book,
+        diary: !!rec.diary,
+        rewardId: (typeof rec.rewardId === 'string' && rec.rewardId) ? rec.rewardId : null
+      };
+    });
+    s.weekendHomework = cleanWk;
+
+    /* 🏆 다윤 일주일 완료 코인 — 월요일 날짜 키별 코인 기록 id 하나 */
+    var rawWr = (raw.dayunWeekRewarded && typeof raw.dayunWeekRewarded === 'object' && !Array.isArray(raw.dayunWeekRewarded)) ? raw.dayunWeekRewarded : {};
+    var cleanWr = {};
+    Object.keys(rawWr).forEach(function (k) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(k)) return;
+      if (parseYmd(k).getDay() !== 1) return;                 // 월요일 키만 인정
+      if (typeof rawWr[k] !== 'string' || !rawWr[k]) return;
+      cleanWr[k] = rawWr[k];
+    });
+    s.dayunWeekRewarded = cleanWr;
+
     if (LIST_TABS.indexOf(s.tab) === -1) s.tab = 'shopping';
 
     s.allowance = Object.assign(
@@ -2765,6 +2894,17 @@ window.__ART__ = {
 
     var weekBox = h('div', { class: 'week', id: 'week-' + kidId });
 
+    /* 📚 주말 숙제 (토·일 통합) — 은우만. 엄마 모드(0203) 잠금과 상관없이 아이가 직접 체크한다 */
+    var weekendBox = null;
+    if (kidId === WEEKEND_KID) {
+      weekendBox = h('div', { class: 'wk', id: 'wk-' + kidId });
+      weekendBox.addEventListener('click', function (ev) {
+        var b = ev.target.closest ? ev.target.closest('[data-wk]') : null;
+        if (!b) return;
+        toggleWeekendHomework(b.dataset.wk);
+      });
+    }
+
     var dictBox = null;
     if (kidId === DICTATION_KID) dictBox = h('div', { class: 'dict', id: 'dictPanel' });
 
@@ -2773,6 +2913,7 @@ window.__ART__ = {
     if (laundryBox) sec.appendChild(laundryBox);
     sec.appendChild(listBox);
     sec.appendChild(form);
+    if (weekendBox) sec.appendChild(weekendBox);
     if (dictBox) sec.appendChild(dictBox);
     sec.appendChild(weekBox);
 
@@ -2920,6 +3061,7 @@ window.__ART__ = {
 
     renderWeek(kidId);
     renderLaundry(kidId);
+    renderWeekend(kidId);
     if (kidId === DICTATION_KID) renderDictation();
     var balEl = $('#balAmt-' + kidId);
     if (balEl) balEl.textContent = won(state.allowance.balances[kidId] || 0);
@@ -2936,10 +3078,17 @@ window.__ART__ = {
     var days = weekDates();
     var today = todayKey();
 
+    /* 🏆 다윤 — 이번 주(월~일) 전부 완료되면 1코인. 달력을 그리기 전에 지급/회수 상태를 맞춘다 */
+    var weekPaid = false;
+    if (kidId === WEEK_REWARD_KID) {
+      if (reconcileWeekReward()) { save(true); renderShop(); renderDex(); }
+      weekPaid = !!weekRewardLogId(weekRewardKey());
+    }
+
     box.appendChild(h('div', { class: 'week-title', text: '이번 주 (월~일)' }));
     var grid = h('div', { class: 'week-days' });
 
-    var fullDays = 0, elapsed = 0;
+    var fullDays = 0, elapsed = 0, weekFull = 0;
 
     days.forEach(function (d, idx) {
       var key = ymd(d);
@@ -2949,6 +3098,7 @@ window.__ART__ = {
       var dayTotal = dayList.length;
       var doneCount = 0;
       dayList.forEach(function (t) { if (rec.kids[kidId][t.id]) doneCount++; });
+      if (dayIsFull(kidId, key)) weekFull++;      // 주간 완료 뱃지용 — 미래 날짜는 자동으로 미완료
       var isFuture = key > today;
       var isToday = key === today;
 
@@ -2989,6 +3139,19 @@ window.__ART__ = {
     else if (elapsed === 0) sub = '이번 주 기록';
     else sub = '이번 주 ' + fullDays + '/' + elapsed + '일 모두 완료 · ' + cfgName(kidId);
     box.appendChild(h('p', { class: 'week-sub', text: sub }));
+
+    /* 🏆 다윤 카드에만: 이번 주 전부 완료 +1코인 뱃지 (기준 일수를 그대로 보여 준다) */
+    if (kidId === WEEK_REWARD_KID) {
+      box.appendChild(h('div', {
+        class: 'week-reward' + (weekPaid ? ' got' : ''),
+        id: 'weekReward-' + kidId,
+        dataset: { weekReward: weekPaid ? '1' : '0' }
+      }, [
+        h('span', { text: weekPaid
+          ? '🎉 이번 주 완료 +1코인 받음'
+          : '🏆 이번 주 전부 완료하면 +1코인! (현재 ' + weekFull + '/' + days.length + '일)' })
+      ]));
+    }
   }
 
   /* 숙제 없는 날 켜기/끄기 */
@@ -3756,6 +3919,229 @@ window.__ART__ = {
       h('span', { class: 'gain', text: on ? '+1 받음' : '+1코인' }),
       h('span', { class: 'box', text: on ? '✓' : '' })
     ]));
+  }
+
+  /* ═══════════ 📚 은우 주말 숙제 (토·일 통합 · 둘 다 하면 +1코인) ═══════════ */
+
+  /* 그 날짜가 속한 주말의 토요일 키 — 일요일이면 전날 토요일 */
+  function weekendKey(date) {
+    var d = date ? new Date(date.getFullYear(), date.getMonth(), date.getDate()) : new Date();
+    var dow = d.getDay();
+    var back = dow === 0 ? -1 : (6 - dow);
+    d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + back);
+    return ymd(d);
+  }
+
+  /* 주말 기록 꺼내기 — 없으면 빈 기록을 만들어 둔다 */
+  function weekendRec(key) {
+    if (!state.weekendHomework || typeof state.weekendHomework !== 'object' || Array.isArray(state.weekendHomework)) state.weekendHomework = {};
+    var rec = state.weekendHomework[key];
+    if (!rec || typeof rec !== 'object' || Array.isArray(rec)) {
+      rec = state.weekendHomework[key] = { book: false, diary: false, rewardId: null };
+    }
+    rec.book = !!rec.book;
+    rec.diary = !!rec.diary;
+    if (typeof rec.rewardId !== 'string' || !rec.rewardId) rec.rewardId = null;
+    return rec;
+  }
+
+  function weekendBoth(rec) { return !!(rec && rec.book && rec.diary); }
+
+  /* 둘 다 했으면 그 주말 1코인을 챙긴다 (이미 받았으면 더 올리지 않는다) */
+  function grantWeekendReward(rec) {
+    if (!rec || rec.rewardId) return false;
+    var kid = WEEKEND_KID;
+    var bal = coinBal(kid);
+    if (bal + WEEKEND_COIN > COIN_MAX) return false;
+    var id = 'cw' + Date.now().toString(36) + Math.random().toString(36).slice(2, 4);
+    state.coins.balances[kid] = bal + WEEKEND_COIN;
+    state.coins.earned[kid] = Math.min(COIN_MAX, (state.coins.earned[kid] || 0) + WEEKEND_COIN);
+    state.coins.log.unshift({
+      id: id,
+      kid: kid,
+      amount: WEEKEND_COIN,
+      at: new Date().toISOString(),
+      label: WEEKEND_LABEL
+    });
+    if (state.coins.log.length > 60) state.coins.log.length = 60;
+    rec.rewardId = id;
+    return true;
+  }
+
+  /* 하나를 풀면 받았던 1코인과 그 기록만 회수 (0 미만·누적 아래로 내려가지 않게) */
+  function revokeWeekendReward(rec) {
+    if (!rec || !rec.rewardId) return false;
+    var kid = WEEKEND_KID;
+    var logId = rec.rewardId;
+    var left = Math.max(0, coinBal(kid) - WEEKEND_COIN);
+    state.coins.balances[kid] = left;
+    state.coins.earned[kid] = Math.max(left, (state.coins.earned[kid] || 0) - WEEKEND_COIN);
+    state.coins.log = state.coins.log.filter(function (x) { return x.id !== logId; });
+    rec.rewardId = null;
+    return true;
+  }
+
+  /* 체크 상태에 맞춰 코인을 맞춘다 (둘 다면 지급, 아니면 회수) */
+  function reconcileWeekend(rec) {
+    if (!rec) return false;
+    if (weekendBoth(rec)) return grantWeekendReward(rec);
+    if (rec.rewardId) return revokeWeekendReward(rec);
+    return false;
+  }
+
+  function toggleWeekendHomework(field) {
+    var it = null;
+    WEEKEND_ITEMS.forEach(function (x) { if (x.key === field) it = x; });
+    if (!it) return;
+    var dow = new Date().getDay();
+    if (dow !== 0 && dow !== 6) { toast('주말 숙제는 토·일요일에 체크할 수 있어요'); return; }
+
+    var rec = weekendRec(weekendKey());
+    rec[field] = !rec[field];
+    var gave = false, took = false;
+    if (weekendBoth(rec)) gave = grantWeekendReward(rec);
+    else if (rec.rewardId) took = revokeWeekendReward(rec);
+
+    save(true);
+    renderKid(WEEKEND_KID);
+    renderShop();
+    renderDex();
+
+    var done = (rec.book ? 1 : 0) + (rec.diary ? 1 : 0);
+    if (gave) {
+      toast('🎉 주말 숙제 둘 다 완료! ' + coinName(WEEKEND_KID) + ' 코인 +' + WEEKEND_COIN + ' (지금 ' + coinBal(WEEKEND_KID) + '개)');
+    } else if (took) {
+      toast(it.label + ' 체크를 풀어서 주말 숙제 코인 ' + WEEKEND_COIN + '개를 회수했어요');
+    } else if (rec[field] && done < 2) {
+      toast(it.label + ' 완료 ✓ · ' + done + '/2 · 하나 더 하면 +1코인!');
+    } else if (!rec[field]) {
+      toast(it.label + ' 체크를 풀었어요');
+    }
+  }
+
+  function renderWeekend(kidId) {
+    if (kidId !== WEEKEND_KID) return;
+    var box = $('#wk-' + kidId);
+    if (!box) return;
+
+    clear(box);
+    var dow = new Date().getDay();
+    if (dow !== 0 && dow !== 6) {
+      /* 평일에는 자리만 잡지 않고 한 줄 안내만 남긴다 (체크 불가) */
+      box.className = 'wk wk-plain';
+      box.appendChild(h('p', { class: 'wk-off', text: '📅 주말 숙제(독서록·일기)는 토·일요일에 열려요 · 둘 다 하면 +1코인!' }));
+      return;
+    }
+
+    var rec = weekendRec(weekendKey());
+    if (reconcileWeekend(rec)) {          /* 다른 기기에서 바뀐 경우까지 맞춘다 */
+      save(true);
+      renderShop();
+      renderDex();
+    }
+    var both = weekendBoth(rec);
+    var done = (rec.book ? 1 : 0) + (rec.diary ? 1 : 0);
+    var satKey = weekendKey();
+    var sunKey = ymd(new Date(parseYmd(satKey).getFullYear(), parseYmd(satKey).getMonth(), parseYmd(satKey).getDate() + 1));
+
+    box.className = 'wk' + (both ? ' got' : '');
+    box.appendChild(h('div', { class: 'wk-head' }, [
+      h('span', { class: 'wi', text: '📚' }),
+      h('div', null, [
+        h('h3', { text: '주말 숙제 (토·일 통합)' }),
+        h('p', { class: 'dp', text: dateLabel(satKey) + ' ~ ' + dateLabel(sunKey) + ' · 둘 다 하면 +1코인' })
+      ]),
+      h('span', { class: 'wk-badge' + (both ? ' got' : ''), text: both
+        ? '🎉 주말 숙제 완료 +1코인 받음'
+        : done + '/2 완료 · 둘 다 하면 +1코인' })
+    ]));
+
+    var rows = h('div', { class: 'wk-rows' });
+    WEEKEND_ITEMS.forEach(function (it) {
+      var on = !!rec[it.key];
+      rows.appendChild(h('button', {
+        class: 'wk-row' + (on ? ' done' : ''),
+        type: 'button',
+        dataset: { wk: it.key },
+        'aria-pressed': on ? 'true' : 'false',
+        'aria-label': it.label + (on ? ' 완료 · 다시 누르면 취소되고 코인을 돌려놓아요' : ' 완료 표시')
+      }, [
+        h('span', { class: 'em', text: it.emoji }),
+        h('span', { class: 'txt', text: it.label }),
+        h('span', { class: 'box', text: on ? '✓' : '' })
+      ]));
+    });
+    box.appendChild(rows);
+  }
+
+  /* ═══════════ 🏆 다윤 일주일 완료 (+1코인) ═══════════ */
+
+  /* 이번 주 월요일 키 */
+  function weekRewardKey() { return ymd(weekDates()[0]); }
+
+  function weekRewardLogId(key) {
+    var m = state.dayunWeekRewarded;
+    if (!m || typeof m !== 'object') return '';
+    var id = m[key];
+    return (typeof id === 'string') ? id : '';
+  }
+
+  /* 그날 해야 할 일을 모두 했나 — 할 일이 없는 날은 완료로 본다 */
+  function dayIsFull(kidId, key) {
+    var rec = dayRead(key);
+    var list = tasksFor(kidId, key);
+    if (!list.length) return true;
+    return list.every(function (t) { return !!rec.kids[kidId][t.id]; });
+  }
+
+  function weekFullDays(kidId) {
+    var n = 0;
+    weekDates().forEach(function (d) { if (dayIsFull(kidId, ymd(d))) n++; });
+    return n;
+  }
+
+  function grantWeekReward(key) {
+    if (!state.dayunWeekRewarded || typeof state.dayunWeekRewarded !== 'object' || Array.isArray(state.dayunWeekRewarded)) state.dayunWeekRewarded = {};
+    if (weekRewardLogId(key)) return false;
+    var kid = WEEK_REWARD_KID;
+    var bal = coinBal(kid);
+    if (bal + WEEK_REWARD_COIN > COIN_MAX) return false;
+    var id = 'cy' + Date.now().toString(36) + Math.random().toString(36).slice(2, 4);
+    state.coins.balances[kid] = bal + WEEK_REWARD_COIN;
+    state.coins.earned[kid] = Math.min(COIN_MAX, (state.coins.earned[kid] || 0) + WEEK_REWARD_COIN);
+    state.coins.log.unshift({
+      id: id,
+      kid: kid,
+      amount: WEEK_REWARD_COIN,
+      at: new Date().toISOString(),
+      label: WEEK_REWARD_LABEL
+    });
+    if (state.coins.log.length > 60) state.coins.log.length = 60;
+    state.dayunWeekRewarded[key] = id;
+    return true;
+  }
+
+  function revokeWeekReward(key) {
+    var logId = weekRewardLogId(key);
+    if (!logId) return false;
+    var kid = WEEK_REWARD_KID;
+    var left = Math.max(0, coinBal(kid) - WEEK_REWARD_COIN);
+    state.coins.balances[kid] = left;
+    state.coins.earned[kid] = Math.max(left, (state.coins.earned[kid] || 0) - WEEK_REWARD_COIN);
+    state.coins.log = state.coins.log.filter(function (x) { return x.id !== logId; });
+    delete state.dayunWeekRewarded[key];
+    return true;
+  }
+
+  /* 이번 주가 다 채워졌으면 지급, 깨졌으면 회수 */
+  function reconcileWeekReward() {
+    var key = weekRewardKey();
+    var days = weekDates().length;
+    var full = weekFullDays(WEEK_REWARD_KID);
+    var got = !!weekRewardLogId(key);
+    if (full >= days && !got) return grantWeekReward(key);
+    if (full < days && got) return revokeWeekReward(key);
+    return false;
   }
 
   function addShopItem() {
