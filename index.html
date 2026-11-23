@@ -401,6 +401,45 @@
   }
   .today-btn:active{transform:scale(.96);}
 
+  /* 🦎 오늘 밥 준 사람 (+1코인) */
+  .feed-people{
+    margin-top:12px;padding:12px 12px 11px;
+    border-radius:20px;border:2px dashed #D8EFE4;
+    background:
+      radial-gradient(circle at 8% 0%, #FFF6DA 0%, rgba(255,246,218,0) 58%),
+      linear-gradient(160deg,#F0FBF6 0%,#F4F8FF 100%);
+  }
+  .feed-people.got{
+    border:2px solid #A8E2C8;
+    background:
+      radial-gradient(circle at 8% 0%, #FFF8E0 0%, rgba(255,248,224,0) 58%),
+      linear-gradient(160deg,#E8FAF2 0%,#F1F5FF 100%);
+    box-shadow:0 3px 12px rgba(140,214,184,.22);
+  }
+  .fp-head{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:900;color:#3F7F6B;letter-spacing:-.2px;}
+  .fp-head .fp-num{margin-left:auto;flex:0 0 auto;font-size:11px;font-weight:900;color:#7FAF9D;background:#fff;border-radius:999px;padding:3px 9px;border:1px solid #E2F2EA;}
+  .fp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:9px;}
+  .fp-btn{
+    display:flex;flex-direction:column;align-items:center;gap:1px;
+    min-height:76px;padding:9px 3px 8px;
+    border:2px solid #E4EDE8;border-radius:17px;background:#FFFDF9;
+    font:inherit;color:#5A4638;cursor:pointer;
+    transition:background .18s,border-color .18s,box-shadow .18s,transform .08s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .fp-btn:active{transform:scale(.97);}
+  .fp-btn .fp-em{font-size:22px;line-height:1.05;}
+  .fp-btn .fp-nm{font-size:12.5px;font-weight:900;letter-spacing:-.5px;white-space:nowrap;line-height:1.15;}
+  .fp-btn .fp-gain{margin-top:2px;font-size:10px;font-weight:900;letter-spacing:-.2px;color:#2C8069;background:#E8F8F1;border-radius:999px;padding:2px 7px;white-space:nowrap;}
+  .fp-btn.on{
+    border:2px solid #9ADFC2;
+    background:linear-gradient(170deg,#DFF8ED,#F2FBFF);color:#2C8069;
+    box-shadow:0 3px 10px rgba(140,214,184,.28);
+  }
+  .fp-btn.on .fp-gain{background:#BDEED9;color:#27705D;}
+  .fp-note{margin:8px 0 0;font-size:11.5px;font-weight:800;color:#8FA79D;line-height:1.45;letter-spacing:-.1px;}
+  .fp-note.tip{color:#B0A79C;}
+
   /* 설정 접기 */
   details.settings{margin-top:12px;}
   details.settings > summary{
@@ -2031,12 +2070,27 @@ window.__ART__ = {
     { key: 'feed', emoji: '🍽️', label: '도마뱀 밥 주기', note: '3일에 1번' }
   ];
 
+  /* 🦎 오늘 밥 준 사람 (+1코인) — 밥 준 사람이 자기 이름을 직접 누른다
+     · 엄마 모드(0203) 잠금과 무관하게 아빠·은우·다윤 누구나 누를 수 있다 (빨래 개기·받아쓰기·주말 숙제와 같음)
+     · 사람마다 따로 체크 — 한 사람을 눌러도 다른 사람 체크는 그대로 (각자 그날 1번, 1코인)
+     · 한 명이라도 체크되면 급여 완료·3일 주기(state.geo.lastFeed) 갱신, 0명이 되면 급여 기록도 취소
+     · 같은 사람을 다시 누르면 그 사람만 체크 해제 + 그날 받은 1코인 회수 */
+  var FEED_WHO = [
+    { who: 'somin', name: '아빠(소민)', emoji: '👨' },
+    { who: 'eunwoo', name: '은우', emoji: '👦' },
+    { who: 'dayun', name: '다윤', emoji: '👧' }
+  ];
+  var FEED_WHO_IDS = ['somin', 'eunwoo', 'dayun'];
+  var FEED_COIN = 1;
+  var FEED_LABEL = '도마뱀 밥 주기 (+1)';
+  var FEED_TITLE = '오늘 밥 준 사람 (+1코인)';
+
   /* ═══════════ 상태 ═══════════ */
   function defaultState() {
     return {
       v: STATE_VERSION,
       days: {},
-      geo: { lastFeed: '2026-11-14', cycleDays: 3, memo: '' },
+      geo: { lastFeed: '2026-11-14', cycleDays: 3, memo: '', rewards: {} },
       tasks: {
         eunwoo: KIDS.eunwoo.defaults.map(function (d) {
           var t = { id: d.id, emoji: d.emoji, label: d.label, builtin: true };
@@ -2117,6 +2171,28 @@ window.__ART__ = {
     if (typeof s.geo.lastFeed !== 'string') s.geo.lastFeed = d.geo.lastFeed;
     if (s.geo.lastFeed && !/^\d{4}-\d{2}-\d{2}$/.test(s.geo.lastFeed)) s.geo.lastFeed = d.geo.lastFeed;
     s.geo.cycleDays = clampInt(s.geo.cycleDays, 1, 30, 3);
+    /* 🦎 밥 준 사람 기록 — 날짜 키별 { somin: id|'', eunwoo: id|'', dayun: id|'' }
+       키가 있으면 그 사람이 줬다는 뜻이고, 값은 그날 남긴 코인 기록 id(코인이 가득 차 못 주면 '')다.
+       예전 한 명짜리 기록({ who, rewardId })도 이 맵으로 옮겨 읽는다. */
+    var rawFeedR = (s.geo.rewards && typeof s.geo.rewards === 'object' && !Array.isArray(s.geo.rewards)) ? s.geo.rewards : {};
+    var cleanFeedR = {};
+    Object.keys(rawFeedR).forEach(function (rk) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(rk)) return;
+      var fr = rawFeedR[rk];
+      if (!fr || typeof fr !== 'object' || Array.isArray(fr)) return;
+      var day = {};
+      if (FEED_WHO_IDS.indexOf(fr.who) !== -1) {
+        day[fr.who] = (typeof fr.rewardId === 'string') ? fr.rewardId : '';
+      }
+      FEED_WHO_IDS.forEach(function (fw) {
+        if (!Object.prototype.hasOwnProperty.call(fr, fw)) return;
+        var v = fr[fw];
+        if (typeof v === 'string') day[fw] = v;
+        else if (v === true) day[fw] = '';
+      });
+      if (Object.keys(day).length) cleanFeedR[rk] = day;
+    });
+    s.geo.rewards = cleanFeedR;
     delete s.geo.lastCalcium;
     delete s.geo.lastShed;
     s.klass = Object.assign({}, d.klass, (raw.klass && typeof raw.klass === 'object') ? raw.klass : {});
@@ -2709,14 +2785,40 @@ window.__ART__ = {
       ]);
     }
 
-    var fedToday = (last === today);
-    var fedBtn = h('button', {
-      class: 'btn fed' + (fedToday ? ' done' : ''),
-      type: 'button',
-      id: 'btnFed',
-      text: fedToday ? '✅ 오늘 밥 줬어요' : '🍽️ 오늘 밥 줬어요!'
+    /* 🦎 오늘 밥 준 사람 — 사람마다 따로 체크한다 (누르면 급여 완료 + 3일 주기 갱신 + 그 사람 1코인) */
+    var feedN = feedCountToday();
+    var peopleGrid = h('div', { class: 'fp-grid' });
+    FEED_WHO.forEach(function (w) {
+      var on = feedWhoOn(w.who);
+      var pbtn = h('button', {
+        class: 'fp-btn' + (on ? ' on' : ''),
+        type: 'button',
+        dataset: { feedwho: w.who },
+        'aria-pressed': on ? 'true' : 'false',
+        'aria-label': w.name + (on
+          ? ' 오늘 밥 줬어요 · 다시 누르면 ' + w.name + ' 코인 1개를 돌려놓아요'
+          : ' 밥 줬어요로 표시하고 ' + w.name + ' 코인 1개 받기')
+      }, [
+        h('span', { class: 'fp-em', text: w.emoji }),
+        h('span', { class: 'fp-nm', text: w.name }),
+        h('span', { class: 'fp-gain', text: on ? '✓ +1 받음' : '+' + FEED_COIN + '코인' })
+      ]);
+      pbtn.addEventListener('click', function () { toggleFeedWho(w.who, pbtn); });
+      peopleGrid.appendChild(pbtn);
     });
-    fedBtn.addEventListener('click', function () { feedToday(fedBtn); });
+    var peopleNote = feedN
+      ? '오늘 밥 준 사람 — ' + feedNamesOn().join(', ') + ' (+' + feedN + '코인) · 사람마다 따로 체크·취소'
+      : '밥 준 사람이 자기 이름을 눌러요 · 사람마다 하루 1번 +' + FEED_COIN + '코인';
+    var people = h('div', { class: 'feed-people' + (feedN ? ' got' : '') }, [
+      h('div', { class: 'fp-head' }, [
+        h('span', { text: '🦎' }),
+        document.createTextNode(FEED_TITLE),
+        h('span', { class: 'fp-num', text: feedN ? '+' + feedN + '코인' : '+' + FEED_COIN })
+      ]),
+      peopleGrid,
+      h('p', { class: 'fp-note', text: peopleNote }),
+      h('p', { class: 'fp-note tip', text: '엄마가 줬으면 위 「도마뱀 밥 주기」 칸만 체크하면 코인 없이 기록돼요' })
+    ]);
 
     var setCycle = h('input', {
       type: 'number', id: 'setCycle', min: '1', max: '30', step: '1',
@@ -2733,7 +2835,7 @@ window.__ART__ = {
     });
 
     box.appendChild(h('div', { class: 'feed-grid' }, [lastBox, nextBox]));
-    box.appendChild(fedBtn);
+    box.appendChild(people);
     box.appendChild(h('details', { class: 'settings' }, [
       h('summary', { text: '⚙️ 급여 주기 설정' }),
       h('div', { class: 'settings-grid' }, [
@@ -2742,20 +2844,138 @@ window.__ART__ = {
     ]));
   }
 
-  function feedToday(anchor) {
-    var today = todayKey();
-    var rec = dayWrite(today);
-    if (!rec.geo.feed) rec.prevFeed = state.geo.lastFeed || '';
-    rec.geo.feed = true;
-    state.geo.lastFeed = today;
-    floatEmoji(anchor, '🍽️ 냠냠!');
+  /* 밥 준 사람 — 화면 갱신 한곳으로 모아 둔다 (코인·도감·상점·진행률이 같이 움직인다) */
+  function refreshFeedUI(kids) {
     save(true);
     renderGeoChecks();
     renderFeedPanel();
     renderHeader();
+    renderShop();
+    (kids || []).forEach(function (k) { renderKid(k); });
     renderDex();
-    var nd = nextFeedDate(today, state.geo.cycleDays || 3);
-    toast('오늘 밥 줬어요! 다음은 ' + (nd.getMonth() + 1) + '/' + nd.getDate() + ' (' + WEEK[nd.getDay()] + ')' + '이에요');
+  }
+
+  function feedWhoCfg(who) {
+    for (var i = 0; i < FEED_WHO.length; i++) if (FEED_WHO[i].who === who) return FEED_WHO[i];
+    return null;
+  }
+
+  function feedWhoName(who) {
+    var c = feedWhoCfg(who);
+    return c ? c.name : '가족';
+  }
+
+  /* 그날(기본 오늘) 밥 준 사람 맵 — 없으면 null */
+  function feedDayRec(key) {
+    var all = (state.geo.rewards && typeof state.geo.rewards === 'object' && !Array.isArray(state.geo.rewards)) ? state.geo.rewards : null;
+    var r = all ? all[key || todayKey()] : null;
+    return (r && typeof r === 'object' && !Array.isArray(r)) ? r : null;
+  }
+
+  /* 그 사람이 그날 밥을 줬는지 — 키가 있으면 준 것으로 본다 (코인이 가득 차 값이 ''여도 체크) */
+  function feedWhoOn(who, key) {
+    var r = feedDayRec(key);
+    return !!(r && Object.prototype.hasOwnProperty.call(r, who) && typeof r[who] === 'string');
+  }
+
+  function feedCountToday() {
+    var n = 0;
+    FEED_WHO_IDS.forEach(function (w) { if (feedWhoOn(w)) n++; });
+    return n;
+  }
+
+  function feedNamesOn(key) {
+    var out = [];
+    FEED_WHO_IDS.forEach(function (w) { if (feedWhoOn(w, key)) out.push(feedWhoName(w)); });
+    return out;
+  }
+
+  /* 밥 준 사람에게 그날 1코인 — 급여 완료·3일 주기도 같이 갱신한다 (사람마다 따로) */
+  function grantFeedReward(who) {
+    var key = todayKey();
+    var rec = dayWrite(key);
+    if (!rec.geo.feed) {
+      if (typeof rec.prevFeed !== 'string') rec.prevFeed = state.geo.lastFeed || '';
+      rec.geo.feed = true;
+    }
+    state.geo.lastFeed = key;
+    if (!state.geo.rewards || typeof state.geo.rewards !== 'object' || Array.isArray(state.geo.rewards)) state.geo.rewards = {};
+    var day = state.geo.rewards[key];
+    if (!day || typeof day !== 'object' || Array.isArray(day)) day = state.geo.rewards[key] = {};
+    var id = '';
+    var bal = coinBal(who);
+    if (bal + FEED_COIN <= COIN_MAX) {
+      state.coins.balances[who] = bal + FEED_COIN;
+      state.coins.earned[who] = Math.min(COIN_MAX, (state.coins.earned[who] || 0) + FEED_COIN);
+      id = 'cf' + Date.now().toString(36) + Math.random().toString(36).slice(2, 4);
+      state.coins.log.unshift({
+        id: id,
+        kid: who,
+        amount: FEED_COIN,
+        at: new Date().toISOString(),
+        label: FEED_LABEL
+      });
+      if (state.coins.log.length > 60) state.coins.log.length = 60;
+    }
+    day[who] = id;
+    return id;
+  }
+
+  /* 그 사람이 그날 받은 1코인만 회수 (다른 사람은 그대로, 잔액 0 미만·누적 획득 아래로 내려가지 않음) */
+  function revokeFeedReward(who, key) {
+    var k = key || todayKey();
+    var day = feedDayRec(k);
+    if (!day || !Object.prototype.hasOwnProperty.call(day, who)) return false;
+    var id = day[who];
+    if (typeof id === 'string' && id) {
+      var left = Math.max(0, coinBal(who) - FEED_COIN);
+      state.coins.balances[who] = left;
+      state.coins.earned[who] = Math.max(left, (state.coins.earned[who] || 0) - FEED_COIN);
+      state.coins.log = state.coins.log.filter(function (x) { return x.id !== id; });
+    }
+    delete day[who];
+    if (!Object.keys(day).length && state.geo.rewards) delete state.geo.rewards[k];
+    return true;
+  }
+
+  /* 오늘 밥 준 사람이 하나도 없으면 급여 기록도 취소하고 직전 급여일로 되돌린다 */
+  function feedUnmarkIfEmpty() {
+    var key = todayKey();
+    if (feedCountToday() > 0) return false;
+    var rec = state.days[key];
+    if (!rec) return false;
+    if (!rec.geo || typeof rec.geo !== 'object') rec.geo = {};
+    rec.geo.feed = false;
+    if (state.geo.lastFeed === key && typeof rec.prevFeed === 'string') state.geo.lastFeed = rec.prevFeed;
+    delete rec.prevFeed;
+    return true;
+  }
+
+  /* 🦎 밥 준 사람 버튼 — 사람마다 따로 체크/해제 (한 사람을 눌러도 다른 사람 체크는 그대로) */
+  function toggleFeedWho(who, anchor) {
+    if (FEED_WHO_IDS.indexOf(who) === -1) return;
+    var key = todayKey();
+    var name = feedWhoName(who);
+
+    /* 이미 체크된 사람을 다시 누름 — 그 사람만 체크 해제 + 그날 받은 1코인 회수 */
+    if (feedWhoOn(who)) {
+      revokeFeedReward(who);
+      feedUnmarkIfEmpty();
+      refreshFeedUI([who]);
+      var rest = feedCountToday();
+      toast(name + ' 밥 주기 취소 · 코인 -' + FEED_COIN + ' (지금 ' + coinBal(who) + '개)'
+        + (rest ? ' · 오늘 아직 ' + rest + '명이 줬어요' : ''));
+      return;
+    }
+
+    grantFeedReward(who);
+    refreshFeedUI([who]);
+    floatEmoji(anchor, '🍽️ +' + FEED_COIN + '코인');
+
+    var n = feedCountToday();
+    var nd = nextFeedDate(key, state.geo.cycleDays || 3);
+    toast('🦎 ' + name + ' 밥 줬어요! 코인 +' + FEED_COIN + ' (지금 ' + coinBal(who) + '개) · 오늘 ' + n + '명 · 다음은 '
+      + (nd.getMonth() + 1) + '/' + nd.getDate() + ' (' + WEEK[nd.getDay()] + ')');
   }
 
   function toggleFeed() {
@@ -2765,24 +2985,25 @@ window.__ART__ = {
       rec.prevFeed = state.geo.lastFeed || '';
       rec.geo.feed = true;
       state.geo.lastFeed = today;
-      save(true);
-      renderGeoChecks();
-      renderFeedPanel();
-      renderHeader();
-      renderDex();
+      refreshFeedUI([]);
       var nd = nextFeedDate(today, state.geo.cycleDays || 3);
       toast('밥 준 날로 기록했어요 · 다음은 ' + (nd.getMonth() + 1) + '/' + nd.getDate() + ' (' + WEEK[nd.getDay()] + ')');
     } else {
+      /* 체크된 사람이 있으면 그 사람들 코인도 같이 회수해 기록과 화면을 맞춘다 */
+      var took = feedNamesOn(today);
+      var tookWho = [];
+      FEED_WHO_IDS.forEach(function (w) {
+        if (!feedWhoOn(w)) return;
+        tookWho.push(w);
+        revokeFeedReward(w);
+      });
       rec.geo.feed = false;
-      if (state.geo.lastFeed === today && typeof rec.prevFeed === 'string' && rec.prevFeed) {
+      if (state.geo.lastFeed === today && typeof rec.prevFeed === 'string') {
         state.geo.lastFeed = rec.prevFeed;
       }
       delete rec.prevFeed;
-      save(true);
-      renderGeoChecks();
-      renderFeedPanel();
-      renderHeader();
-      renderDex();
+      refreshFeedUI(tookWho);
+      if (tookWho.length) toast('밥 주기 기록을 풀어서 ' + took.join('·') + ' 코인도 회수했어요');
     }
   }
 
